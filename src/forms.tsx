@@ -22,12 +22,6 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 mb-4">
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
-      <div className="flex flex-wrap gap-2 mb-3">
-        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
-        {listing.subjects.map((s) => (
-          <span key={s} className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
-        ))}
-      </div>
       <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{listing.title}</h1>
       {listing.organization && <p className="text-slate-600 mt-1">{listing.organization}</p>}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
@@ -51,11 +45,17 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
           <p className="text-sm text-slate-700">{listing.successMetric}</p>
         </div>
       )}
-      <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+      <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
         <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
         <p className="text-sm text-slate-700">
-          {formatCurrency(listing.amountSeeking)} → {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
+          {formatCurrency(listing.amountSeeking)} serves {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
         </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
+        {listing.subjects.map((s) => (
+          <span key={s} className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
+        ))}
       </div>
     </div>
   );
@@ -171,7 +171,7 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
             {MODEL_TYPES.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </Field>
-        <Field label="Subjects">
+        <Field label="Categories">
           <div className="flex flex-wrap gap-2">
             {SUBJECTS.map((s) => (
               <button type="button" key={s} onClick={() => toggleSubject(s)} className={`px-2 py-1 rounded-md text-xs font-medium border ${subjects.includes(s) ? "bg-teal-600 text-white border-teal-600" : "bg-white text-slate-700 border-slate-200"}`}>{s}</button>
