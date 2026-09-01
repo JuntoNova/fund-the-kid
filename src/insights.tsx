@@ -114,7 +114,7 @@ export function CostPerKidSlider({
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
         <p className="text-sm font-semibold text-slate-900 tabular-nums">
-          {formatCurrency(lo)} – {hiLabel}
+          {formatCurrency(lo)} to {hiLabel}
         </p>
       </div>
       <div className="relative h-8">
@@ -138,12 +138,6 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
     <button onClick={onClick} className="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-teal-300 hover:shadow-sm transition-all">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2 mb-1">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
-            {listing.subjects.map((s) => (
-              <span key={s} className="inline-flex items-center px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
-            ))}
-          </div>
           <h3 className="font-semibold text-slate-900 text-[15px] leading-snug">{listing.title}</h3>
           {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
@@ -161,6 +155,12 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
           <div className="text-lg font-bold text-slate-900">{formatCurrency(listing.amountSeeking)}</div>
           <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per child</div>
         </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
+        {listing.subjects.map((s) => (
+          <span key={s} className="inline-flex items-center px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
+        ))}
       </div>
     </button>
   );
