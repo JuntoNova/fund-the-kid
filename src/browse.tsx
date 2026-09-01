@@ -4,10 +4,9 @@ import { SUCCESS_MEASURES } from "./data/listings";
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Search, Filter, X } from "lucide-react";
-import { KidValueChart, CostPerKidSlider, ListingCard } from "./insights";
+import { KidValueChart, CostPerKidSlider, ListingCard, SUBJECTS } from "./insights";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
-const SUBJECTS = ["STEM", "Literacy", "Civics", "Career pathways"];
 
 export function BrowseView(props: {
   listings: Listing[];
@@ -46,7 +45,7 @@ export function BrowseView(props: {
         <p className="mt-2 text-slate-600 text-[15px] leading-relaxed max-w-3xl">
           An open marketplace for education capital. If it helps kids learn, it can be listed here —
           public, private, charter, micro, supplemental, for-profit, or anything in between.
-          Donors browse, compare cost per kid, and go straight to the work.
+          Donors browse, compare cost to serve each child, and go straight to the work.
         </p>
       </div>
 
