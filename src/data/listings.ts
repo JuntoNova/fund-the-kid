@@ -29,6 +29,7 @@ export type Listing = {
   amountFunded: number;
   kidsServed: number;
   timeHorizonYears: number;
+  timeHorizonMonths: number;
   state: string;
   metro: string;
   description: string;
@@ -40,6 +41,10 @@ export type Listing = {
   successMetric?: string;
 };
 
+function monthsFromYears(years: number): number {
+  return Math.round(years * 12);
+}
+
 export const LISTINGS: Listing[] = [
   {
     id: "1",
@@ -48,6 +53,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 900000,
     kidsServed: 450,
     timeHorizonYears: 3,
+    timeHorizonMonths: 36,
     state: "TX",
     metro: "Austin",
     description:
@@ -65,6 +71,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 1800000,
     kidsServed: 1200,
     timeHorizonYears: 4,
+    timeHorizonMonths: 48,
     state: "AZ",
     metro: "Phoenix",
     description:
@@ -82,6 +89,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 220000,
     kidsServed: 1800,
     timeHorizonYears: 2,
+    timeHorizonMonths: 24,
     state: "WV",
     metro: "Multi-county",
     description:
@@ -99,6 +107,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 400000,
     kidsServed: 280,
     timeHorizonYears: 3,
+    timeHorizonMonths: 36,
     state: "TX",
     metro: "Dallas–Fort Worth",
     description:
@@ -116,6 +125,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 1100000,
     kidsServed: 600,
     timeHorizonYears: 5,
+    timeHorizonMonths: 60,
     state: "IL",
     metro: "Chicago",
     description:
@@ -133,6 +143,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 45000,
     kidsServed: 320,
     timeHorizonYears: 2,
+    timeHorizonMonths: 24,
     state: "FL",
     metro: "Tampa Bay",
     description:
@@ -150,6 +161,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 600000,
     kidsServed: 400,
     timeHorizonYears: 3,
+    timeHorizonMonths: 36,
     state: "TN",
     metro: "Nashville",
     description:
@@ -167,6 +179,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 150000,
     kidsServed: 5000,
     timeHorizonYears: 2,
+    timeHorizonMonths: 24,
     state: "Multi",
     metro: "National (rural focus)",
     description:
@@ -184,6 +197,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 250000,
     kidsServed: 220,
     timeHorizonYears: 3,
+    timeHorizonMonths: 36,
     state: "OH",
     metro: "Columbus",
     description:
@@ -201,6 +215,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 900000,
     kidsServed: 500,
     timeHorizonYears: 4,
+    timeHorizonMonths: 48,
     state: "CO",
     metro: "Denver",
     description:
@@ -218,6 +233,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 200000,
     kidsServed: 2400,
     timeHorizonYears: 2,
+    timeHorizonMonths: 24,
     state: "GA",
     metro: "Atlanta",
     description:
@@ -235,6 +251,7 @@ export const LISTINGS: Listing[] = [
     amountFunded: 700000,
     kidsServed: 360,
     timeHorizonYears: 3,
+    timeHorizonMonths: 36,
     state: "CA",
     metro: "San Francisco",
     description:
@@ -255,4 +272,20 @@ export function formatCurrency(n: number): string {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`;
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}k`;
   return `$${n}`;
+}
+
+export function horizonMonths(listing: Listing): number {
+  if (listing.timeHorizonMonths) return listing.timeHorizonMonths;
+  return monthsFromYears(listing.timeHorizonYears || 1);
+}
+
+export function formatHorizon(listing: Listing): string {
+  const months = horizonMonths(listing);
+  if (months < 12) return months === 1 ? "1 month" : `${months} months`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (rem === 0) return years === 1 ? "1 year" : `${years} years`;
+  const yearPart = years === 1 ? "1 year" : `${years} years`;
+  const monthPart = rem === 1 ? "1 month" : `${rem} months`;
+  return `${yearPart} ${monthPart}`;
 }
