@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Listing } from "./data/listings";
+import { SUCCESS_MEASURES } from "./data/listings";
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Search, Filter, X } from "lucide-react";
@@ -19,6 +20,8 @@ export function BrowseView(props: {
   setModelFilter: (v: string) => void;
   subjectFilter: string;
   setSubjectFilter: (v: string) => void;
+  successFilter: string;
+  setSuccessFilter: (v: string) => void;
   states: string[];
   showFilters: boolean;
   setShowFilters: (v: boolean) => void;
@@ -30,10 +33,11 @@ export function BrowseView(props: {
 }) {
   const {
     listings, allListings, query, setQuery, stateFilter, setStateFilter,
-    modelFilter, setModelFilter, subjectFilter, setSubjectFilter, states,
+    modelFilter, setModelFilter, subjectFilter, setSubjectFilter,
+    successFilter, setSuccessFilter, states,
     showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax, onOpen,
   } = props;
-  const activeFilters = [stateFilter, subjectFilter].filter(Boolean).length + (cpkMin != null || cpkMax != null ? 1 : 0);
+  const activeFilters = [stateFilter, subjectFilter, successFilter].filter(Boolean).length + (cpkMin != null || cpkMax != null ? 1 : 0);
 
   return (
     <div>
@@ -58,7 +62,7 @@ export function BrowseView(props: {
       </div>
 
       {showFilters && (
-        <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">State</label>
             <select value={stateFilter} onChange={(e) => setStateFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
@@ -73,6 +77,13 @@ export function BrowseView(props: {
               {SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Success measure</label>
+            <select value={successFilter} onChange={(e) => setSuccessFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
+              <option value="">All measures</option>
+              {SUCCESS_MEASURES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
         </div>
       )}
 
@@ -84,7 +95,7 @@ export function BrowseView(props: {
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
         {activeFilters > 0 && (
-          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setCpkMin(null); setCpkMax(null); }} className="text-sm text-teal-700 hover:text-teal-800 font-medium inline-flex items-center gap-1">
+          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setCpkMin(null); setCpkMax(null); }} className="text-sm text-teal-700 hover:text-teal-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
         )}
