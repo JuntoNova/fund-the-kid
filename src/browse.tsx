@@ -43,7 +43,7 @@ export function BrowseView(props: {
       <div className="mb-5">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Fund the Kid</h1>
         <p className="mt-2 text-slate-600 text-[15px] leading-relaxed max-w-3xl">
-          An open marketplace for education capital. If it helps kids learn, it can be listed here —
+          An open marketplace for education capital. If it helps kids learn, it can be listed here:
           public, private, charter, micro, supplemental, for-profit, or anything in between.
           Donors browse, compare cost to serve each child, and go straight to the work.
         </p>
@@ -70,9 +70,9 @@ export function BrowseView(props: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Subject</label>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
             <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
-              <option value="">All subjects</option>
+              <option value="">All categories</option>
               {SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
