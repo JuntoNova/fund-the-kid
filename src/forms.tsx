@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { Listing, ModelType } from "./data/listings";
 import { costPerKid, formatCurrency, formatHorizon } from "./data/listings";
+import { SUBJECTS } from "./insights";
 import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
 
 const MODEL_TYPES: ModelType[] = ["Microschool","Charter","Private","Supplemental","Hybrid","Homeschool co-op","For-profit","Other"];
-const SUBJECTS = ["STEM", "Literacy", "Civics", "Career pathways"];
 
 function formatMonths(months: number): string {
   if (months < 12) return months === 1 ? "1 month" : `${months} months`;
@@ -33,8 +33,8 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
         <Metric label="Seeking" value={formatCurrency(listing.amountSeeking)} />
         <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
-        <Metric label="Kids" value={listing.kidsServed.toLocaleString()} />
-        <Metric label="Per kid" value={formatCurrency(cpk)} />
+        <Metric label="Children" value={listing.kidsServed.toLocaleString()} />
+        <Metric label="Per child" value={formatCurrency(cpk)} />
       </div>
       <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-6">
         <div className="h-full bg-teal-600" style={{ width: `${pct}%` }} />
@@ -42,7 +42,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <p className="text-slate-700 leading-relaxed mb-4">{listing.description}</p>
       <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
         <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
-        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} kids · {formatHorizon(listing)}</span>
+        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
         <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
       </div>
       {listing.successMetric && (
@@ -54,7 +54,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
         <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
         <p className="text-sm text-slate-700">
-          {formatCurrency(listing.amountSeeking)} → {listing.kidsServed.toLocaleString()} kids over {formatHorizon(listing)} ({formatCurrency(cpk)} per kid).
+          {formatCurrency(listing.amountSeeking)} → {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
         </p>
       </div>
     </div>
@@ -130,11 +130,11 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
           <Field label="Amount to raise" required>
             <input value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" placeholder="2500000" required />
           </Field>
-          <Field label="Kids served" required>
+          <Field label="Children served" required>
             <input value={kids} onChange={(e) => setKids(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" required />
           </Field>
         </div>
-        {previewCpk != null && <p className="text-sm text-slate-600">{formatCurrency(previewCpk)} per kid</p>}
+        {previewCpk != null && <p className="text-sm text-slate-600">{formatCurrency(previewCpk)} per child</p>}
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-slate-700">Time horizon</span>
