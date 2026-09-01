@@ -1,4 +1,4 @@
-import { costPerKid, formatCurrency } from "./data/listings";
+import { costPerKid, formatCurrency, formatHorizon } from "./data/listings";
 import type { Listing } from "./data/listings";
 import { MapPin, Users } from "lucide-react";
 
@@ -137,7 +137,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
           {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
             <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{listing.metro}, {listing.state}</span>
-            <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} kids · {listing.timeHorizonYears} yr</span>
+            <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} kids · {formatHorizon(listing)}</span>
           </div>
           <div className="mt-2.5 max-w-xs">
             <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
