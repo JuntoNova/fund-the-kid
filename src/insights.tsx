@@ -10,6 +10,9 @@ export const SUBJECTS = [
   "Early childhood",
   "Athletics",
   "Arts",
+  "Tuition",
+  "Therapy",
+  "Tutoring",
 ];
 
 export function KidValueChart({
@@ -40,7 +43,7 @@ export function KidValueChart({
     <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col">
       <div className="mb-3">
         <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
-        <p className="text-xs text-slate-500">By subject.</p>
+        <p className="text-xs text-slate-500">By category.</p>
       </div>
       <div className="mb-4">
         <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
