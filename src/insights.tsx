@@ -136,25 +136,26 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
   const pct = Math.min(100, Math.round((listing.amountFunded / listing.amountSeeking) * 100));
   return (
     <button onClick={onClick} className="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-teal-300 hover:shadow-sm transition-all">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h3 className="font-semibold text-slate-900 text-[15px] leading-snug">{listing.title}</h3>
-          {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
-            <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{listing.metro}, {listing.state}</span>
-            <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
-          </div>
-          <div className="mt-2.5 max-w-xs">
-            <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <div className="h-full bg-teal-600 rounded-full" style={{ width: `${pct}%` }} />
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1">{pct}% funded · {formatCurrency(listing.amountFunded)} in</p>
-          </div>
+      <h3 className="font-semibold text-slate-900 text-[15px] leading-snug">{listing.title}</h3>
+      {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
+        <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{listing.metro}, {listing.state}</span>
+        <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
+      </div>
+      <div className="mt-2.5 max-w-xs">
+        <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div className="h-full bg-teal-600 rounded-full" style={{ width: `${pct}%` }} />
         </div>
-        <div className="sm:text-right shrink-0">
+        <p className="text-[11px] text-slate-500 mt-1">{pct}% funded · {formatCurrency(listing.amountFunded)} in</p>
+      </div>
+      <div className="mt-3 flex items-start gap-4">
+        <div className="shrink-0">
           <div className="text-lg font-bold text-slate-900">{formatCurrency(listing.amountSeeking)}</div>
           <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per child</div>
         </div>
+        {listing.successMetric && (
+          <p className="flex-1 text-sm text-slate-600 leading-snug pt-0.5">{listing.successMetric}</p>
+        )}
       </div>
       <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
         <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
