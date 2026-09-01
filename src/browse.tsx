@@ -40,7 +40,9 @@ export function BrowseView(props: {
       <div className="mb-5">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Fund the Kid</h1>
         <p className="mt-2 text-slate-600 text-[15px] leading-relaxed max-w-3xl">
-          Education projects seeking capital. Filter by place, subject, and cost per kid.
+          An open marketplace for education capital. If it helps kids learn, it can be listed here —
+          public, private, charter, micro, supplemental, for-profit, or anything in between.
+          Donors browse, compare cost per kid, and go straight to the work.
         </p>
       </div>
 
