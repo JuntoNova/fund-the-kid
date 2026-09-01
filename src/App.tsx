@@ -2,9 +2,8 @@ import { useMemo, useState } from "react";
 import {
   LISTINGS,
   costPerKid,
-  formatCurrency,
 } from "./data/listings";
-import type { Listing, ModelType } from "./data/listings";
+import type { Listing } from "./data/listings";
 import { BrowseView } from "./browse";
 import { DetailView, ListForm } from "./forms";
 import { Plus } from "lucide-react";
@@ -20,6 +19,7 @@ export default function App() {
   const [stateFilter, setStateFilter] = useState("");
   const [modelFilter, setModelFilter] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("");
+  const [successFilter, setSuccessFilter] = useState("");
   const [showFilters, setShowFilters] = useState(true);
   const [cpkMin, setCpkMin] = useState<number | null>(null);
   const [cpkMax, setCpkMax] = useState<number | null>(null);
@@ -28,18 +28,19 @@ export default function App() {
     return listings.filter((l) => {
       if (query) {
         const q = query.toLowerCase();
-        const hay = `${l.title} ${l.description} ${l.organization ?? ""} ${l.metro} ${l.state}`.toLowerCase();
+        const hay = `${l.title} ${l.description} ${l.organization ?? ""} ${l.metro} ${l.state} ${l.successMetric ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       if (stateFilter && l.state !== stateFilter) return false;
       if (modelFilter && l.modelType !== modelFilter) return false;
       if (subjectFilter && !l.subjects.includes(subjectFilter)) return false;
+      if (successFilter && !(l.successMeasures ?? []).includes(successFilter as Listing["successMeasures"][number])) return false;
       const cpk = costPerKid(l);
       if (cpkMin != null && cpk < cpkMin) return false;
       if (cpkMax != null && cpk > cpkMax) return false;
       return true;
     });
-  }, [listings, query, stateFilter, modelFilter, subjectFilter, cpkMin, cpkMax]);
+  }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, cpkMin, cpkMax]);
 
   const selected = listings.find((l) => l.id === selectedId) ?? null;
   const states = Array.from(new Set(listings.map((l) => l.state).filter((s) => s !== "Multi"))).sort();
@@ -104,6 +105,8 @@ export default function App() {
             setModelFilter={setModelFilter}
             subjectFilter={subjectFilter}
             setSubjectFilter={setSubjectFilter}
+            successFilter={successFilter}
+            setSuccessFilter={setSuccessFilter}
             states={states}
             showFilters={showFilters}
             setShowFilters={setShowFilters}
