@@ -1,10 +1,18 @@
 import { useState } from "react";
 import type { Listing, ModelType } from "./data/listings";
-import { costPerKid, formatCurrency } from "./data/listings";
+import { costPerKid, formatCurrency, formatHorizon } from "./data/listings";
 import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
 
 const MODEL_TYPES: ModelType[] = ["Microschool","Charter","Private","Supplemental","Hybrid","Homeschool co-op","For-profit","Other"];
 const SUBJECTS = ["STEM", "Literacy", "Civics", "Career pathways"];
+
+function formatMonths(months: number): string {
+  if (months < 12) return months === 1 ? "1 month" : `${months} months`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (rem === 0) return years === 1 ? "1 year" : `${years} years`;
+  return `${years === 1 ? "1 year" : `${years} years`} ${rem === 1 ? "1 month" : `${rem} months`}`;
+}
 
 export function DetailView({ listing, onBack }: { listing: Listing; onBack: () => void }) {
   const cpk = costPerKid(listing);
@@ -34,7 +42,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <p className="text-slate-700 leading-relaxed mb-4">{listing.description}</p>
       <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
         <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
-        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} kids · {listing.timeHorizonYears} yr</span>
+        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} kids · {formatHorizon(listing)}</span>
         <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
       </div>
       {listing.successMetric && (
@@ -46,7 +54,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
         <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
         <p className="text-sm text-slate-700">
-          {formatCurrency(listing.amountSeeking)} → {listing.kidsServed.toLocaleString()} kids over {listing.timeHorizonYears} year{listing.timeHorizonYears > 1 ? "s" : ""} ({formatCurrency(cpk)} per kid).
+          {formatCurrency(listing.amountSeeking)} → {listing.kidsServed.toLocaleString()} kids over {formatHorizon(listing)} ({formatCurrency(cpk)} per kid).
         </p>
       </div>
     </div>
@@ -67,7 +75,7 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
   const [org, setOrg] = useState("");
   const [amount, setAmount] = useState("");
   const [kids, setKids] = useState("");
-  const [years, setYears] = useState("3");
+  const [months, setMonths] = useState(12);
   const [state, setState] = useState("TX");
   const [metro, setMetro] = useState("");
   const [modelType, setModelType] = useState<ModelType>("Microschool");
@@ -77,6 +85,7 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
   const amountN = Number(String(amount).replace(/[^0-9]/g, "")) || 0;
   const kidsN = Number(String(kids).replace(/[^0-9]/g, "")) || 0;
   const previewCpk = kidsN > 0 ? Math.round(amountN / kidsN) : null;
+  const left = ((months - 1) / 59) * 100;
 
   function toggleSubject(s: string) {
     setSubjects((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
@@ -92,12 +101,14 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
       amountSeeking: amountN,
       amountFunded: 0,
       kidsServed: kidsN,
-      timeHorizonYears: Number(years) || 1,
+      timeHorizonYears: months / 12,
+      timeHorizonMonths: months,
       state,
       metro: metro || state,
       description,
       modelType,
       subjects,
+      successMeasures: [],
     });
   }
 
@@ -115,18 +126,38 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
         <Field label="Organization">
           <input value={org} onChange={(e) => setOrg(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
         </Field>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Amount to raise" required>
             <input value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" placeholder="2500000" required />
           </Field>
           <Field label="Kids served" required>
             <input value={kids} onChange={(e) => setKids(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" required />
           </Field>
-          <Field label="Years">
-            <input value={years} onChange={(e) => setYears(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
-          </Field>
         </div>
         {previewCpk != null && <p className="text-sm text-slate-600">{formatCurrency(previewCpk)} per kid</p>}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-slate-700">Time horizon</span>
+            <span className="text-sm font-semibold text-slate-900 tabular-nums">{formatMonths(months)}</span>
+          </div>
+          <div className="relative h-8">
+            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-slate-200" />
+            <div className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-teal-500" style={{ left: 0, width: `${left}%` }} />
+            <input
+              type="range"
+              min={1}
+              max={60}
+              step={1}
+              value={months}
+              onChange={(e) => setMonths(Number(e.target.value))}
+              className="absolute inset-0 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-teal-600 [&::-webkit-slider-thumb]:shadow"
+            />
+          </div>
+          <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+            <span>1 month</span>
+            <span>5 years</span>
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="State">
             <input value={state} onChange={(e) => setState(e.target.value.toUpperCase())} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
