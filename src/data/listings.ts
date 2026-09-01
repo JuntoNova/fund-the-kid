@@ -17,6 +17,7 @@ export const SUCCESS_MEASURES = [
   "Credentials",
   "Parent satisfaction",
   "Completion",
+  "Other",
 ] as const;
 
 export type SuccessMeasure = (typeof SUCCESS_MEASURES)[number];
@@ -104,7 +105,7 @@ export const LISTINGS: Listing[] = [
       "Seed capital for a for-profit microschool model that operates at $8–10k per student. Funds three founding sites and a playbook for subsequent independent operators.",
     modelType: "For-profit",
     subjects: ["STEM", "Civics"],
-    successMeasures: ["Parent satisfaction"],
+    successMeasures: ["Parent satisfaction", "Other"],
     organization: "North Texas Learning Co.",
     successMetric: "Sites cash-flow positive by month 18; parent NPS > 50",
   },
@@ -189,7 +190,7 @@ export const LISTINGS: Listing[] = [
       "A cluster of civics-forward microschools teaching American history, debate, and local government through real civic projects.",
     modelType: "Microschool",
     subjects: ["Civics"],
-    successMeasures: ["Parent satisfaction"],
+    successMeasures: ["Parent satisfaction", "Other"],
     organization: "Heartland Civic Studio",
     successMetric: "Students complete a public civic project each year; parent satisfaction above 80%",
   },
