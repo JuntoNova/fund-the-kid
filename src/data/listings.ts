@@ -8,6 +8,19 @@ export type ModelType =
   | "For-profit"
   | "Other";
 
+export const SUCCESS_MEASURES = [
+  "State assessments",
+  "Independent assessments",
+  "Grade-level growth",
+  "College enrollment",
+  "Employment",
+  "Credentials",
+  "Parent satisfaction",
+  "Completion",
+] as const;
+
+export type SuccessMeasure = (typeof SUCCESS_MEASURES)[number];
+
 export type Listing = {
   id: string;
   title: string;
@@ -20,6 +33,7 @@ export type Listing = {
   description: string;
   modelType: ModelType;
   subjects: string[];
+  successMeasures: SuccessMeasure[];
   organization?: string;
   contactEmail?: string;
   successMetric?: string;
@@ -39,6 +53,7 @@ export const LISTINGS: Listing[] = [
       "Expand a network of small STEM-focused microschools serving middle-school students. Each site runs 40–60 students with project-based learning and real industry mentors. Funds cover two new sites, teacher training, and lab equipment.",
     modelType: "Microschool",
     subjects: ["STEM", "Career pathways"],
+    successMeasures: ["Independent assessments"],
     organization: "River City Learning Labs",
     successMetric: "80% of students demonstrate grade-level or above performance on independent math/science assessments by year 2",
   },
@@ -55,6 +70,7 @@ export const LISTINGS: Listing[] = [
       "Support a cohort of three high schools redesigning the upper secondary experience around mastery, real work, and post-secondary pathways. Includes instructional redesign, teacher residencies, and employer partnerships.",
     modelType: "Charter",
     subjects: ["Career pathways", "Literacy", "STEM"],
+    successMeasures: ["College enrollment", "Employment"],
     organization: "Valley Pathways Collaborative",
     successMetric: "65% of graduates enrolled in college, apprenticeship, or living-wage employment within 6 months",
   },
@@ -71,6 +87,7 @@ export const LISTINGS: Listing[] = [
       "Launch and sustain after-school and summer literacy pods in five rural counties. Uses structured literacy curriculum with local tutors. Designed for high-dose intervention where traditional options are thin.",
     modelType: "Supplemental",
     subjects: ["Literacy"],
+    successMeasures: ["Grade-level growth"],
     organization: "Mountain Literacy Collective",
     successMetric: "Average 1.5 grade-level gains in reading over 18 months for participating students",
   },
@@ -87,6 +104,7 @@ export const LISTINGS: Listing[] = [
       "Seed capital for a for-profit microschool model that operates at $8–10k per student. Funds three founding sites and a playbook for subsequent independent operators.",
     modelType: "For-profit",
     subjects: ["STEM", "Civics"],
+    successMeasures: ["Parent satisfaction"],
     organization: "North Texas Learning Co.",
     successMetric: "Sites cash-flow positive by month 18; parent NPS > 50",
   },
@@ -103,6 +121,7 @@ export const LISTINGS: Listing[] = [
       "Build a full high-school program integrating dual enrollment, paid apprenticeships, and industry credentials in logistics, healthcare, and advanced manufacturing.",
     modelType: "Hybrid",
     subjects: ["Career pathways"],
+    successMeasures: ["Credentials", "Employment"],
     organization: "Great Lakes Opportunity Schools",
     successMetric: "70% of seniors hold an industry credential; 50% have paid work experience before graduation",
   },
@@ -119,6 +138,7 @@ export const LISTINGS: Listing[] = [
       "Shared specialist teachers and curriculum for a network of homeschool co-ops focusing on accelerated math. Low overhead; high parent involvement.",
     modelType: "Homeschool co-op",
     subjects: ["STEM"],
+    successMeasures: ["Grade-level growth", "Independent assessments"],
     organization: "Bay Area Math Collaborative",
     successMetric: "Students average 1+ grade level gain per academic year on standardized math measures",
   },
@@ -135,6 +155,7 @@ export const LISTINGS: Listing[] = [
       "Open a second classical elementary campus serving a mixed-income population. Strong emphasis on knowledge-rich curriculum, phonics, and character formation.",
     modelType: "Private",
     subjects: ["Literacy", "Civics"],
+    successMeasures: ["State assessments"],
     organization: "Cumberland Classical Academy",
     successMetric: "Top-quartile performance on state assessments by year 3 relative to district peers",
   },
@@ -151,6 +172,7 @@ export const LISTINGS: Listing[] = [
       "Live online civics, debate, and American history courses for students in low-density areas. Combines small-group instruction with asynchronous content.",
     modelType: "Supplemental",
     subjects: ["Civics"],
+    successMeasures: ["Completion", "Independent assessments"],
     organization: "Civic Groundwork",
     successMetric: "Completion rate > 75%; measurable gains on civics knowledge assessments",
   },
@@ -167,6 +189,7 @@ export const LISTINGS: Listing[] = [
       "A cluster of civics-forward microschools teaching American history, debate, and local government through real civic projects.",
     modelType: "Microschool",
     subjects: ["Civics"],
+    successMeasures: ["Parent satisfaction"],
     organization: "Heartland Civic Studio",
     successMetric: "Students complete a public civic project each year; parent satisfaction above 80%",
   },
@@ -183,6 +206,7 @@ export const LISTINGS: Listing[] = [
       "New high school pairing half-day academics with paid apprenticeships in healthcare and construction.",
     modelType: "Charter",
     subjects: ["Career pathways", "STEM"],
+    successMeasures: ["Employment", "Credentials"],
     organization: "Front Range Works",
     successMetric: "60% of seniors in paid work or credentialed programs before graduation",
   },
@@ -199,6 +223,7 @@ export const LISTINGS: Listing[] = [
       "High-dose tutoring pods attached to churches and community centers across metro Atlanta.",
     modelType: "Supplemental",
     subjects: ["Literacy"],
+    successMeasures: ["Grade-level growth"],
     organization: "Read Atlanta Now",
     successMetric: "Average one-year reading gain for students below grade level",
   },
@@ -215,6 +240,7 @@ export const LISTINGS: Listing[] = [
       "Expand hybrid classical campuses combining two days on-site with guided home learning.",
     modelType: "Hybrid",
     subjects: ["Literacy", "Civics"],
+    successMeasures: ["State assessments", "Grade-level growth"],
     organization: "Golden Gate Classical",
     successMetric: "Top-quartile literacy growth vs. local district peers",
   },
