@@ -77,7 +77,7 @@ export const LISTINGS: Listing[] = [
     description:
       "Support a cohort of three high schools redesigning the upper secondary experience around mastery, real work, and post-secondary pathways. Includes instructional redesign, teacher residencies, and employer partnerships.",
     modelType: "Charter",
-    subjects: ["Career pathways", "Literacy", "STEM"],
+    subjects: ["Career pathways", "Literacy", "STEM", "Athletics"],
     successMeasures: ["College enrollment", "Employment"],
     organization: "Valley Pathways Collaborative",
     successMetric: "65% of graduates enrolled in college, apprenticeship, or living-wage employment within 6 months",
@@ -95,7 +95,7 @@ export const LISTINGS: Listing[] = [
     description:
       "Launch and sustain after-school and summer literacy pods in five rural counties. Uses structured literacy curriculum with local tutors. Designed for high-dose intervention where traditional options are thin.",
     modelType: "Supplemental",
-    subjects: ["Literacy"],
+    subjects: ["Literacy", "Early childhood"],
     successMeasures: ["Grade-level growth"],
     organization: "Mountain Literacy Collective",
     successMetric: "Average 1.5 grade-level gains in reading over 18 months for participating students",
@@ -113,7 +113,7 @@ export const LISTINGS: Listing[] = [
     description:
       "Seed capital for a for-profit microschool model that operates at $8–10k per student. Funds three founding sites and a playbook for subsequent independent operators.",
     modelType: "For-profit",
-    subjects: ["STEM", "Civics"],
+    subjects: ["STEM", "Civics", "Early childhood"],
     successMeasures: ["Parent satisfaction", "Other"],
     organization: "North Texas Learning Co.",
     successMetric: "Sites cash-flow positive by month 18; parent NPS > 50",
@@ -167,7 +167,7 @@ export const LISTINGS: Listing[] = [
     description:
       "Open a second classical elementary campus serving a mixed-income population. Strong emphasis on knowledge-rich curriculum, phonics, and character formation.",
     modelType: "Private",
-    subjects: ["Literacy", "Civics"],
+    subjects: ["Literacy", "Civics", "Early childhood", "Arts"],
     successMeasures: ["State assessments"],
     organization: "Cumberland Classical Academy",
     successMetric: "Top-quartile performance on state assessments by year 3 relative to district peers",
@@ -221,7 +221,7 @@ export const LISTINGS: Listing[] = [
     description:
       "New high school pairing half-day academics with paid apprenticeships in healthcare and construction.",
     modelType: "Charter",
-    subjects: ["Career pathways", "STEM"],
+    subjects: ["Career pathways", "STEM", "Athletics"],
     successMeasures: ["Employment", "Credentials"],
     organization: "Front Range Works",
     successMetric: "60% of seniors in paid work or credentialed programs before graduation",
@@ -239,7 +239,7 @@ export const LISTINGS: Listing[] = [
     description:
       "High-dose tutoring pods attached to churches and community centers across metro Atlanta.",
     modelType: "Supplemental",
-    subjects: ["Literacy"],
+    subjects: ["Literacy", "Early childhood"],
     successMeasures: ["Grade-level growth"],
     organization: "Read Atlanta Now",
     successMetric: "Average one-year reading gain for students below grade level",
@@ -257,7 +257,7 @@ export const LISTINGS: Listing[] = [
     description:
       "Expand hybrid classical campuses combining two days on-site with guided home learning.",
     modelType: "Hybrid",
-    subjects: ["Literacy", "Civics"],
+    subjects: ["Literacy", "Civics", "Arts"],
     successMeasures: ["State assessments", "Grade-level growth"],
     organization: "Golden Gate Classical",
     successMetric: "Top-quartile literacy growth vs. local district peers",
