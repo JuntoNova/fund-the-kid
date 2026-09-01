@@ -2,7 +2,15 @@ import { costPerKid, formatCurrency, formatHorizon } from "./data/listings";
 import type { Listing } from "./data/listings";
 import { MapPin, Users } from "lucide-react";
 
-const SUBJECTS = ["STEM", "Literacy", "Civics", "Career pathways"];
+export const SUBJECTS = [
+  "STEM",
+  "Literacy",
+  "Civics",
+  "Career pathways",
+  "Early childhood",
+  "Athletics",
+  "Arts",
+];
 
 export function KidValueChart({
   listings,
@@ -31,8 +39,8 @@ export function KidValueChart({
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col">
       <div className="mb-3">
-        <p className="text-sm font-semibold text-slate-900">What a kid costs</p>
-        <p className="text-xs text-slate-500">Cost per kid by subject.</p>
+        <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
+        <p className="text-xs text-slate-500">By subject.</p>
       </div>
       <div className="mb-4">
         <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
@@ -50,13 +58,13 @@ export function KidValueChart({
             <button key={r.subject} onClick={() => onSelectSubject(r.subject)} className={`w-full text-left ${active ? "opacity-100" : "hover:opacity-90"}`}>
               <div className="flex items-baseline justify-between gap-2 mb-1">
                 <span className={`text-xs font-semibold ${active ? "text-teal-800" : "text-slate-800"}`}>{r.subject}</span>
-                <span className="text-xs font-bold text-slate-900 tabular-nums">{formatCurrency(r.cpk)} / kid</span>
+                <span className="text-xs font-bold text-slate-900 tabular-nums">{formatCurrency(r.cpk)} per child</span>
               </div>
               <div className="h-7 rounded-md bg-slate-100 overflow-hidden relative">
                 <div className={`h-full rounded-md ${active ? "bg-teal-600" : "bg-teal-400"}`} style={{ width: `${Math.max(8, (r.cpk / maxCpk) * 100)}%` }} />
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                {r.kids.toLocaleString()} kids · {r.count} opportunit{r.count === 1 ? "y" : "ies"}
+                {r.kids.toLocaleString()} children · {r.count} opportunit{r.count === 1 ? "y" : "ies"}
               </p>
             </button>
           );
@@ -65,7 +73,7 @@ export function KidValueChart({
       </div>
       {totalKids > 0 && (
         <p className="text-xs text-slate-500 mt-3">
-          {formatCurrency(Math.round(totalSeeking / totalKids))} average per kid in this view.
+          {formatCurrency(Math.round(totalSeeking / totalKids))} average per child in this view.
         </p>
       )}
     </div>
@@ -101,7 +109,7 @@ export function CostPerKidSlider({
   return (
     <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-semibold text-slate-900">Cost per kid</p>
+        <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
         <p className="text-sm font-semibold text-slate-900 tabular-nums">
           {formatCurrency(lo)} – {hiLabel}
         </p>
@@ -137,7 +145,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
           {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
             <span className="inline-flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{listing.metro}, {listing.state}</span>
-            <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} kids · {formatHorizon(listing)}</span>
+            <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
           </div>
           <div className="mt-2.5 max-w-xs">
             <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -148,7 +156,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
         </div>
         <div className="sm:text-right shrink-0">
           <div className="text-lg font-bold text-slate-900">{formatCurrency(listing.amountSeeking)}</div>
-          <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per kid</div>
+          <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per child</div>
         </div>
       </div>
     </button>
