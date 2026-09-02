@@ -8,6 +8,11 @@ body {
   color: #2A3D55;
 }
 
-h1, h2, h3, .font-display {
-  font-family: Fraunces, ui-serif, Georgia, serif;
+.font-logo, .font-display {
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+}
+
+h1, h2, h3 {
+  font-family: Nunito, ui-rounded, system-ui, sans-serif;
 }
