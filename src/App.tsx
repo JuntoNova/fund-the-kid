@@ -57,33 +57,31 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: "#F6F1E8" }}>
+      <header className="border-b border-sky-100 bg-white/90 backdrop-blur sticky top-0 z-20">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <button
             onClick={() => {
               setView("browse");
               setSelectedId(null);
             }}
-            className="flex items-center gap-2.5 text-slate-900 font-semibold tracking-tight"
+            className="flex items-center gap-2.5 text-[#2A3D55] font-display font-semibold tracking-tight text-[17px]"
           >
-            <div className="w-7 h-7 rounded-md bg-teal-600 flex items-center justify-center text-white text-[10px] font-bold leading-none">
-              FTK
-            </div>
+            <img src="/mark.svg" alt="" className="w-9 h-9" />
             Fund the Kid
           </button>
           <nav className="flex items-center gap-2">
             <button
               onClick={() => setView("browse")}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium ${
-                view === "browse" ? "bg-slate-100 text-slate-900" : "text-slate-600 hover:text-slate-900"
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                view === "browse" ? "bg-sky-100 text-[#2A3D55]" : "text-slate-600 hover:text-[#2A3D55]"
               }`}
             >
               Browse
             </button>
             <button
               onClick={() => setView("list")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-teal-600 text-white hover:bg-teal-700"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-sky-600 text-white hover:bg-sky-700"
             >
               <Plus className="w-4 h-4" />
               List opportunity
