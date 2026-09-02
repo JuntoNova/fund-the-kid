@@ -43,7 +43,7 @@ export function BrowseView(props: {
       <div className="mb-5">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Fund the Kid</h1>
         <p className="mt-2 text-slate-600 text-[15px] leading-relaxed max-w-3xl">
-          An open marketplace for education capital. If it helps kids learn, it can be listed here:
+          A place to invest in education. If it helps kids learn, it can be listed here:
           public, private, charter, micro, supplemental, for-profit, or anything in between.
           Donors browse, compare cost to serve each child, and go straight to the work.
         </p>
@@ -52,11 +52,11 @@ export function BrowseView(props: {
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by title, place, organization…" className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by title, place, organization…" className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500" />
         </div>
         <button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center gap-2 px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50">
           <Filter className="w-4 h-4" /> Filters
-          {activeFilters > 0 && <span className="ml-1 w-5 h-5 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center">{activeFilters}</span>}
+          {activeFilters > 0 && <span className="ml-1 w-5 h-5 rounded-full bg-sky-600 text-white text-xs flex items-center justify-center">{activeFilters}</span>}
         </button>
       </div>
 
@@ -94,7 +94,7 @@ export function BrowseView(props: {
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
         {activeFilters > 0 && (
-          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setCpkMin(null); setCpkMax(null); }} className="text-sm text-teal-700 hover:text-teal-800 font-medium inline-flex items-center gap-1">
+          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setCpkMin(null); setCpkMax(null); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
         )}
@@ -150,7 +150,7 @@ function MapPanel({
           <p className="text-sm font-semibold text-slate-900">Where the opportunities are</p>
           <p className="text-xs text-slate-500">Select a state to filter.</p>
         </div>
-        {stateFilter && <button onClick={() => onSelectState(stateFilter)} className="text-xs font-medium text-teal-700 hover:text-teal-800">Back to U.S.</button>}
+        {stateFilter && <button onClick={() => onSelectState(stateFilter)} className="text-xs font-medium text-sky-700 hover:text-sky-800">Back to U.S.</button>}
       </div>
       <div className="h-[280px] sm:h-[320px]">
         <ComposableMap projection="geoAlbersUsa" projectionConfig={{ scale: 800 }} width={800} height={500} style={{ width: "100%", height: "100%" }}>
@@ -162,7 +162,7 @@ function MapPanel({
                 const active = stateFilter === abbr;
                 const has = !!stats;
                 const intensity = has ? 0.18 + (stats.seeking / maxSeeking) * 0.82 : 0;
-                const fill = !has ? "#E2E8F0" : active ? "#0F766E" : `rgba(13, 148, 136, ${intensity})`;
+                const fill = !has ? "#E2E8F0" : active ? "#4A94C8" : `rgba(74, 148, 200, ${intensity})`;
                 return (
                   <Geography
                     key={geo.rsmKey}
@@ -173,8 +173,8 @@ function MapPanel({
                     onClick={() => abbr && onSelectState(abbr)}
                     style={{
                       default: { fill, stroke: "#fff", strokeWidth: 0.8, outline: "none", cursor: "pointer" },
-                      hover: { fill: has ? "#0D9488" : "#CBD5E1", stroke: "#fff", strokeWidth: 1, outline: "none", cursor: "pointer" },
-                      pressed: { fill: "#0F766E", outline: "none" },
+                      hover: { fill: has ? "#6BABD6" : "#CBD5E1", stroke: "#fff", strokeWidth: 1, outline: "none", cursor: "pointer" },
+                      pressed: { fill: "#4A94C8", outline: "none" },
                     }}
                   />
                 );
