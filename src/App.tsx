@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LISTINGS,
   costPerKid,
@@ -13,12 +13,21 @@ import {
 import type { Listing } from "./data/listings";
 import { BrowseView } from "./browse";
 import { DetailView, ListForm } from "./forms";
+import { PrivacyView, TermsView } from "./legal";
+import { parseAsk } from "./filterAsk";
 import { Plus } from "lucide-react";
 
-type View = "browse" | "detail" | "list";
+type View = "browse" | "detail" | "list" | "privacy" | "terms";
+
+function viewFromPath(path: string): View {
+  const p = path.replace(/\/$/, "") || "/";
+  if (p === "/privacy") return "privacy";
+  if (p === "/terms") return "terms";
+  return "browse";
+}
 
 export default function App() {
-  const [view, setView] = useState<View>("browse");
+  const [view, setView] = useState<View>(() => viewFromPath(window.location.pathname));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>(LISTINGS);
 
@@ -29,9 +38,19 @@ export default function App() {
   const [successFilter, setSuccessFilter] = useState("");
   const [trustFilters, setTrustFilters] = useState<string[]>([]);
   const [proofFilters, setProofFilters] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [cpkMin, setCpkMin] = useState<number | null>(null);
   const [cpkMax, setCpkMax] = useState<number | null>(null);
+
+  useEffect(() => {
+    function onPop() {
+      const next = viewFromPath(window.location.pathname);
+      setView(next);
+      if (next === "browse") setSelectedId(null);
+    }
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const filtered = useMemo(() => {
     return listings.filter((l) => {
@@ -61,6 +80,22 @@ export default function App() {
   const selected = listings.find((l) => l.id === selectedId) ?? null;
   const states = Array.from(new Set(listings.map((l) => l.state).filter((s) => s !== "Multi"))).sort();
 
+  function goBrowse() {
+    if (window.location.pathname !== "/") window.history.pushState({}, "", "/");
+    setView("browse");
+    setSelectedId(null);
+  }
+
+  function goPrivacy() {
+    window.history.pushState({}, "", "/privacy");
+    setView("privacy");
+  }
+
+  function goTerms() {
+    window.history.pushState({}, "", "/terms");
+    setView("terms");
+  }
+
   function openDetail(id: string) {
     setSelectedId(id);
     setView("detail");
@@ -72,15 +107,25 @@ export default function App() {
     setView("detail");
   }
 
+  function onAsk(text: string): string {
+    const patch = parseAsk(text);
+    setStateFilter(patch.stateFilter);
+    setSubjectFilter(patch.subjectFilter);
+    setSuccessFilter(patch.successFilter);
+    setTrustFilters(patch.trustFilters);
+    setProofFilters(patch.proofFilters);
+    setCpkMin(patch.cpkMin);
+    setCpkMax(patch.cpkMax);
+    setShowFilters(true);
+    return patch.note;
+  }
+
   return (
-    <div className="min-h-screen" style={{ background: "#F6F1E8" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#F6F1E8" }}>
       <header className="border-b border-sky-100 bg-white/90 backdrop-blur sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <button
-            onClick={() => {
-              setView("browse");
-              setSelectedId(null);
-            }}
+            onClick={goBrowse}
             className="flex items-center text-[#2A3D55]"
           >
             <span className="font-logo text-[34px] leading-none tracking-tight" style={{ color: "#2A3D55" }}>
@@ -89,7 +134,7 @@ export default function App() {
           </button>
           <nav className="flex items-center gap-2">
             <button
-              onClick={() => setView("browse")}
+              onClick={goBrowse}
               className={`px-3 py-1.5 rounded-full text-sm font-medium ${
                 view === "browse" ? "bg-sky-100 text-[#2A3D55]" : "text-slate-600 hover:text-[#2A3D55]"
               }`}
@@ -107,7 +152,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
         {view === "browse" && (
           <BrowseView
             listings={filtered}
@@ -134,15 +179,24 @@ export default function App() {
             setCpkMin={setCpkMin}
             setCpkMax={setCpkMax}
             onOpen={openDetail}
+            onAsk={onAsk}
           />
         )}
         {view === "detail" && selected && (
-          <DetailView listing={selected} onBack={() => setView("browse")} />
+          <DetailView listing={selected} onBack={goBrowse} />
         )}
         {view === "list" && (
-          <ListForm onSubmit={handleNewListing} onCancel={() => setView("browse")} />
+          <ListForm onSubmit={handleNewListing} onCancel={goBrowse} />
         )}
+        {view === "privacy" && <PrivacyView onBack={goBrowse} />}
+        {view === "terms" && <TermsView onBack={goBrowse} />}
       </main>
+
+      <footer className="max-w-6xl mx-auto px-4 py-6 w-full text-sm text-[#2A3D55]">
+        <button type="button" onClick={goPrivacy} className="hover:underline">Privacy</button>
+        <span className="mx-2">·</span>
+        <button type="button" onClick={goTerms} className="hover:underline">Terms</button>
+      </footer>
     </div>
   );
 }
