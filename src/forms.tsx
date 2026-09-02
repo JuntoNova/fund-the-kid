@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Listing, ModelType } from "./data/listings";
 import { costPerKid, formatCurrency, formatHorizon } from "./data/listings";
-import { SUBJECTS } from "./insights";
+import { SUBJECTS, TrustBadgeRow, ProofRows } from "./insights";
 import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
 
 const MODEL_TYPES: ModelType[] = ["Microschool","Charter","Private","Supplemental","Hybrid","Homeschool co-op","For-profit","Other"];
@@ -22,6 +22,9 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 mb-4">
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
+      <div className="mb-3">
+        <TrustBadgeRow listing={listing} />
+      </div>
       <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{listing.title}</h1>
       {listing.organization && <p className="text-slate-600 mt-1">{listing.organization}</p>}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
@@ -57,6 +60,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
           <span key={s} className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
         ))}
       </div>
+      <ProofRows listing={listing} />
     </div>
   );
 }
@@ -109,6 +113,9 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
       modelType,
       subjects,
       successMeasures: [],
+      entityType: "other",
+      credentials: [],
+      proofs: [],
     });
   }
 
