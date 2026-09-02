@@ -50,8 +50,8 @@ export function KidValueChart({
           <span>{formatCurrency(totalFunded)} already moving</span>
           <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
         </div>
-        <div className="h-2.5 rounded-full bg-teal-100 overflow-hidden flex">
-          <div className="h-full bg-teal-600" style={{ width: `${fundedPct}%` }} />
+        <div className="h-2.5 rounded-full bg-sky-100 overflow-hidden flex">
+          <div className="h-full bg-sky-600" style={{ width: `${fundedPct}%` }} />
         </div>
       </div>
       <div className="flex-1 space-y-3">
@@ -60,11 +60,11 @@ export function KidValueChart({
           return (
             <button key={r.subject} onClick={() => onSelectSubject(r.subject)} className={`w-full text-left ${active ? "opacity-100" : "hover:opacity-90"}`}>
               <div className="flex items-baseline justify-between gap-2 mb-1">
-                <span className={`text-xs font-semibold ${active ? "text-teal-800" : "text-slate-800"}`}>{r.subject}</span>
+                <span className={`text-xs font-semibold ${active ? "text-sky-800" : "text-slate-800"}`}>{r.subject}</span>
                 <span className="text-xs font-bold text-slate-900 tabular-nums">{formatCurrency(r.cpk)} per child</span>
               </div>
               <div className="h-7 rounded-md bg-slate-100 overflow-hidden relative">
-                <div className={`h-full rounded-md ${active ? "bg-teal-600" : "bg-teal-400"}`} style={{ width: `${Math.max(8, (r.cpk / maxCpk) * 100)}%` }} />
+                <div className={`h-full rounded-md ${active ? "bg-sky-600" : "bg-sky-400"}`} style={{ width: `${Math.max(8, (r.cpk / maxCpk) * 100)}%` }} />
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
                 {r.kids.toLocaleString()} children · {r.count} opportunit{r.count === 1 ? "y" : "ies"}
@@ -119,9 +119,9 @@ export function CostPerKidSlider({
       </div>
       <div className="relative h-8">
         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-slate-200" />
-        <div className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-teal-500" style={{ left: `${left}%`, width: `${Math.max(0, right - left)}%` }} />
-        <input type="range" min={0} max={10000} value={lo} onChange={(e) => onMin(Number(e.target.value))} className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-teal-600 [&::-webkit-slider-thumb]:shadow" />
-        <input type="range" min={0} max={10000} value={hi} onChange={(e) => onMax(Number(e.target.value))} className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-teal-600 [&::-webkit-slider-thumb]:shadow" />
+        <div className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-sky-500" style={{ left: `${left}%`, width: `${Math.max(0, right - left)}%` }} />
+        <input type="range" min={0} max={10000} value={lo} onChange={(e) => onMin(Number(e.target.value))} className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-sky-600 [&::-webkit-slider-thumb]:shadow" />
+        <input type="range" min={0} max={10000} value={hi} onChange={(e) => onMax(Number(e.target.value))} className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-sky-600 [&::-webkit-slider-thumb]:shadow" />
       </div>
       <div className="flex justify-between text-[11px] text-slate-400 mt-1">
         <span>$0</span>
@@ -135,7 +135,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
   const cpk = costPerKid(listing);
   const pct = Math.min(100, Math.round((listing.amountFunded / listing.amountSeeking) * 100));
   return (
-    <button onClick={onClick} className="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-teal-300 hover:shadow-sm transition-all">
+    <button onClick={onClick} className="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-sky-300 hover:shadow-sm transition-all">
       <h3 className="font-semibold text-slate-900 text-[15px] leading-snug">{listing.title}</h3>
       {listing.organization && <p className="text-sm text-slate-500 mt-0.5">{listing.organization}</p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
@@ -144,7 +144,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
       </div>
       <div className="mt-2.5 max-w-xs">
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-          <div className="h-full bg-teal-600 rounded-full" style={{ width: `${pct}%` }} />
+          <div className="h-full bg-sky-600 rounded-full" style={{ width: `${pct}%` }} />
         </div>
         <p className="text-[11px] text-slate-500 mt-1">{pct}% funded · {formatCurrency(listing.amountFunded)} in</p>
       </div>
@@ -160,7 +160,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
       <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
         <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
         {listing.subjects.map((s) => (
-          <span key={s} className="inline-flex items-center px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 text-xs font-medium">{s}</span>
+          <span key={s} className="inline-flex items-center px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 text-xs font-medium">{s}</span>
         ))}
       </div>
     </button>
