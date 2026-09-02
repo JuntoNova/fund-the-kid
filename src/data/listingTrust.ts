@@ -1,7 +1,7 @@
 export const LISTING_TRUST: Record<string, {
   entityType: "nonprofit" | "for-profit" | "other";
-  credentials: { kind: "candid_gold" | "bbb_wise_giving" | "irs_determination" | "form_990" | "sos_filing" | "ein_verified" | "bbb_business"; label: string; checkedAt?: string; href?: string }[];
-  proofs: { title: string; thirdParty: boolean; href?: string; measure?: string }[];
+  credentials: { kind: "candid_gold" | "bbb_wise_giving" | "irs_determination" | "form_990" | "sos_filing" | "ein_verified" | "bbb_business"; label: string; checkedAt?: string; href?: string; fileName?: string }[];
+  proofs: { title: string; thirdParty: boolean; href?: string; fileName?: string; measure?: string }[];
 }> = {
   "1": {
     entityType: "nonprofit",
@@ -131,7 +131,7 @@ export const LISTING_TRUST: Record<string, {
       { kind: "irs_determination", label: "IRS determination letter", href: "#" },
     ],
     proofs: [
-      { title: "After-school attendance, operator report", thirdParty: false, measure: "Enrollment" },
+      { title: "After-school attendance, rec house records", thirdParty: false, measure: "Enrollment" },
     ],
   },
   "15": {
