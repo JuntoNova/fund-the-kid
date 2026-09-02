@@ -27,6 +27,21 @@ export type SuccessMeasure = (typeof SUCCESS_MEASURES)[number];
 
 export type EntityType = "nonprofit" | "for-profit" | "other";
 
+export type WorkKind = "program" | "place" | "company";
+export type MoneyKind = "gift" | "ownership" | "either";
+
+export const WORK_KIND_LABELS: Record<WorkKind, string> = {
+  program: "Program",
+  place: "Place",
+  company: "Company",
+};
+
+export const MONEY_KIND_LABELS: Record<MoneyKind, string> = {
+  gift: "Gift",
+  ownership: "Ownership",
+  either: "Either",
+};
+
 export type CredentialKind =
   | "candid_gold"
   | "bbb_wise_giving"
@@ -70,13 +85,20 @@ export type Listing = {
   entityType: EntityType;
   credentials: Credential[];
   proofs: Proof[];
+  workKind: WorkKind;
+  moneyKind: MoneyKind;
 };
 
 function monthsFromYears(years: number): number {
   return Math.round(years * 12);
 }
 
-const RAW: Omit<Listing, "entityType" | "credentials" | "proofs">[] = [
+type RawListing = Omit<Listing, "entityType" | "credentials" | "proofs" | "workKind" | "moneyKind"> & {
+  workKind?: WorkKind;
+  moneyKind?: MoneyKind;
+};
+
+const RAW: RawListing[] = [
   {
     id: "1",
     title: "Austin STEM Microschool Network Expansion",
@@ -293,6 +315,66 @@ const RAW: Omit<Listing, "entityType" | "credentials" | "proofs">[] = [
     organization: "Golden Gate Classical",
     successMetric: "Top-quartile literacy growth vs. local district peers",
   },
+  {
+    id: "13",
+    title: "Houston STEM Lab and Center",
+    amountSeeking: 1800000,
+    amountFunded: 400000,
+    kidsServed: 900,
+    timeHorizonYears: 3,
+    timeHorizonMonths: 36,
+    state: "TX",
+    metro: "Houston",
+    description:
+      "Open a shared STEM lab and center in Houston. Benches, tools, and rooms stay on site for schools and after-school groups. Funds cover build-out, equipment, and two years of staff.",
+    modelType: "Other",
+    subjects: ["STEM", "Innovation"],
+    successMeasures: ["Enrollment", "Parent satisfaction"],
+    organization: "Gulf Coast STEM Center",
+    successMetric: "900 students use the lab each year by year 3",
+    workKind: "place",
+    moneyKind: "either",
+  },
+  {
+    id: "14",
+    title: "Northside After-School Rec Center",
+    amountSeeking: 420000,
+    amountFunded: 90000,
+    kidsServed: 650,
+    timeHorizonYears: 2,
+    timeHorizonMonths: 24,
+    state: "OH",
+    metro: "Cleveland",
+    description:
+      "Keep a neighborhood rec center open after school. Courts, rooms, and staff for homework, sports, and meals. Gift funds cover rent, coaches, and snacks.",
+    modelType: "Supplemental",
+    subjects: ["Athletics", "Tutoring"],
+    successMeasures: ["Enrollment", "Parent satisfaction"],
+    organization: "Northside Rec Alliance",
+    successMetric: "650 children attend at least two days a week",
+    workKind: "place",
+    moneyKind: "gift",
+  },
+  {
+    id: "15",
+    title: "ReadPath Learning Tools (Seed)",
+    amountSeeking: 4500000,
+    amountFunded: 800000,
+    kidsServed: 12000,
+    timeHorizonYears: 4,
+    timeHorizonMonths: 48,
+    state: "TX",
+    metro: "Austin",
+    description:
+      "A for-profit learning-tool company building reading software for tutors and small schools. Seed round for product, sales, and two years of runway. Owners buy a stake. This is not a gift.",
+    modelType: "For-profit",
+    subjects: ["Literacy", "Innovation"],
+    successMeasures: ["Enrollment", "Grade-level growth"],
+    organization: "ReadPath Inc.",
+    successMetric: "12,000 students on the tool by month 36 with measured reading growth",
+    workKind: "company",
+    moneyKind: "ownership",
+  },
 ];
 
 export const LISTINGS: Listing[] = RAW.map((l) => {
@@ -302,6 +384,8 @@ export const LISTINGS: Listing[] = RAW.map((l) => {
     entityType: trust?.entityType ?? "other",
     credentials: (trust?.credentials ?? []) as Listing["credentials"],
     proofs: (trust?.proofs ?? []) as Listing["proofs"],
+    workKind: l.workKind ?? "program",
+    moneyKind: l.moneyKind ?? "gift",
   };
 });
 
@@ -365,7 +449,7 @@ export function matchesSuccessMeasure(listing: Listing, measure: string): boolea
   return (listing.proofs ?? []).some((p) => p.measure === measure);
 }
 
-export type TrustBadgeStyle = "entity" | "candid" | "bbb" | "proof" | "ein" | "self" | "example";
+export type TrustBadgeStyle = "entity" | "candid" | "bbb" | "proof" | "ein" | "self" | "example" | "money";
 
 export type TrustBadge = {
   label: string;

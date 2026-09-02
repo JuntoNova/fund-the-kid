@@ -1,6 +1,6 @@
 import { useMemo, useState, type FormEvent } from "react";
-import type { Listing } from "./data/listings";
-import { SUCCESS_MEASURES } from "./data/listings";
+import type { Listing, WorkKind, MoneyKind } from "./data/listings";
+import { SUCCESS_MEASURES, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/listings";
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Search, Filter, X } from "lucide-react";
@@ -77,6 +77,10 @@ export function BrowseView(props: {
   cpkMax: number | null;
   setCpkMin: (v: number | null) => void;
   setCpkMax: (v: number | null) => void;
+  workKindFilter: string;
+  setWorkKindFilter: (v: string) => void;
+  moneyKindFilter: string;
+  setMoneyKindFilter: (v: string) => void;
   onOpen: (id: string) => void;
   onAsk: (text: string) => string;
 }) {
@@ -85,10 +89,11 @@ export function BrowseView(props: {
     modelFilter, setModelFilter, subjectFilter, setSubjectFilter,
     successFilter, setSuccessFilter, trustFilters, setTrustFilters,
     proofFilters, setProofFilters, states,
-    showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax, onOpen, onAsk,
+    showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax,
+    workKindFilter, setWorkKindFilter, moneyKindFilter, setMoneyKindFilter, onOpen, onAsk,
   } = props;
   const activeFilters =
-    [stateFilter, subjectFilter, successFilter].filter(Boolean).length
+    [stateFilter, subjectFilter, successFilter, workKindFilter, moneyKindFilter].filter(Boolean).length
     + (cpkMin != null || cpkMax != null ? 1 : 0)
     + trustFilters.length
     + proofFilters.length;
@@ -129,6 +134,23 @@ export function BrowseView(props: {
             <select value={successFilter} onChange={(e) => setSuccessFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
               <option value="">All measures</option>
               {SUCCESS_MEASURES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Kind of work</label>
+            <select value={workKindFilter} onChange={(e) => setWorkKindFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
+              <option value="">All kinds of work</option>
+              {(Object.keys(WORK_KIND_LABELS) as WorkKind[]).map((k) => <option key={k} value={k}>{WORK_KIND_LABELS[k]}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Kind of money</label>
+            <select value={moneyKindFilter} onChange={(e) => setMoneyKindFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
+              <option value="">All kinds of money</option>
+              {(Object.keys(MONEY_KIND_LABELS) as MoneyKind[]).map((k) => <option key={k} value={k}>{MONEY_KIND_LABELS[k]}</option>)}
             </select>
           </div>
           </div>
@@ -186,7 +208,7 @@ export function BrowseView(props: {
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
         {activeFilters > 0 ? (
-          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setTrustFilters([]); setProofFilters([]); setCpkMin(null); setCpkMax(null); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
+          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setTrustFilters([]); setProofFilters([]); setCpkMin(null); setCpkMax(null); setWorkKindFilter(""); setMoneyKindFilter(""); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
         ) : (
@@ -311,7 +333,7 @@ function AskPanel({ onAsk }: { onAsk: (text: string) => string }) {
           Set filters
         </button>
       </div>
-      <p className="text-xs text-[#7a8794] mt-2">Examples: literacy in Texas with proof. For-profit with a state filing. Cheap STEM with a seal.</p>
+      <p className="text-xs text-[#7a8794] mt-2">Examples: literacy in Texas with proof. Gift in Texas. Ownership company. Place in Houston.</p>
       {note ? <p className="text-sm text-[#2A3D55] mt-2">{note}</p> : null}
     </form>
   );

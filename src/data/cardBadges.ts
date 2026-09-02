@@ -1,5 +1,5 @@
 import type { Listing, TrustBadge } from "./listings";
-import { hasOutcomeProof } from "./listings";
+import { hasOutcomeProof, MONEY_KIND_LABELS } from "./listings";
 
 export function listingCardBadges(listing: Listing): TrustBadge[] {
   const badges: TrustBadge[] = [];
@@ -15,6 +15,8 @@ export function listingCardBadges(listing: Listing): TrustBadge[] {
   else if (creds.some((c) => c.kind === "bbb_wise_giving")) badges.push({ label: "BBB Wise Giving", style: "bbb" });
   else if (creds.some((c) => c.kind === "bbb_business")) badges.push({ label: "BBB Business", style: "ein" });
   if (hasOutcomeProof(listing)) badges.push({ label: "Proof", style: "proof" });
+  const money = listing.moneyKind ?? "gift";
+  badges.push({ label: MONEY_KIND_LABELS[money], style: "money" });
   badges.push({ label: "Example", style: "example" });
   return badges;
 }

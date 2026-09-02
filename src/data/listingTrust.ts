@@ -118,4 +118,30 @@ export const LISTING_TRUST: Record<string, {
       { title: "California state assessment growth, 2025", thirdParty: true, href: "#", measure: "State assessments" },
     ],
   },
+  "13": {
+    entityType: "nonprofit",
+    credentials: [
+      { kind: "irs_determination", label: "IRS determination letter", href: "#" },
+    ],
+    proofs: [],
+  },
+  "14": {
+    entityType: "nonprofit",
+    credentials: [
+      { kind: "irs_determination", label: "IRS determination letter", href: "#" },
+    ],
+    proofs: [
+      { title: "After-school attendance, operator report", thirdParty: false, measure: "Enrollment" },
+    ],
+  },
+  "15": {
+    entityType: "for-profit",
+    credentials: [
+      { kind: "sos_filing", label: "Texas SOS certificate of formation", href: "#" },
+      { kind: "ein_verified", label: "EIN verified" },
+    ],
+    proofs: [
+      { title: "Pilot reading growth, operator report", thirdParty: false, measure: "Grade-level growth" },
+    ],
+  },
 };
