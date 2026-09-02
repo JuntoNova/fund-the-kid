@@ -13,6 +13,7 @@ export const SUBJECTS = [
   "Tuition",
   "Therapy",
   "Tutoring",
+  "Innovation",
 ];
 
 export function KidValueChart({
