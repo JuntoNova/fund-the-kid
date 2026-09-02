@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Listing, ModelType, WorkKind, MoneyKind } from "./data/listings";
+import type { Credential, EntityType, Listing, ModelType, MoneyKind, Proof, WorkKind } from "./data/listings";
 import { costPerKid, formatCurrency, formatHorizon, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/listings";
 import { SUBJECTS, TrustBadgeRow, ProofRows } from "./insights";
 import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
@@ -140,7 +140,7 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
       <p className="text-sm font-semibold text-slate-900">Talk / wire / grant</p>
       <p className="text-sm text-slate-600 mt-1">{defaultKind === "ownership" ? "Ownership talk. Wire or a call. This is not a small gift." : "Bigger gifts. Wire, grant paper, or a call."}</p>
       {done ? (
-        <p className="text-sm font-medium text-teal-800 mt-3">Thanks. This is a mock. Nobody was emailed. No money moved.</p>
+        <p className="text-sm font-medium text-teal-800 mt-3">Thanks. This is a mock. Nobody is notified yet.</p>
       ) : (
         <form
           className="mt-3 space-y-3"
@@ -214,6 +214,26 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
   const [description, setDescription] = useState("");
   const [workKind, setWorkKind] = useState<WorkKind>("program");
   const [moneyKind, setMoneyKind] = useState<MoneyKind>("gift");
+  const [entityType, setEntityType] = useState<EntityType>("other");
+  const [successMetric, setSuccessMetric] = useState("");
+  const [irsOn, setIrsOn] = useState(false);
+  const [irsHref, setIrsHref] = useState("");
+  const [irsFile, setIrsFile] = useState("");
+  const [candidOn, setCandidOn] = useState(false);
+  const [candidHref, setCandidHref] = useState("");
+  const [candidFile, setCandidFile] = useState("");
+  const [bbbOn, setBbbOn] = useState(false);
+  const [bbbHref, setBbbHref] = useState("");
+  const [bbbFile, setBbbFile] = useState("");
+  const [sosOn, setSosOn] = useState(false);
+  const [sosHref, setSosHref] = useState("");
+  const [sosFile, setSosFile] = useState("");
+  const [einOn, setEinOn] = useState(false);
+  const [einHref, setEinHref] = useState("");
+  const [einFile, setEinFile] = useState("");
+  const [proofRows, setProofRows] = useState<{ title: string; href: string; fileName: string; thirdParty: boolean }[]>([
+    { title: "", href: "", fileName: "", thirdParty: false },
+  ]);
 
   const amountN = Number(String(amount).replace(/[^0-9]/g, "")) || 0;
   const kidsN = Number(String(kids).replace(/[^0-9]/g, "")) || 0;
@@ -222,6 +242,41 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
 
   function toggleSubject(s: string) {
     setSubjects((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+  }
+
+  function pushSeal(list: Credential[], on: boolean, kind: Credential["kind"], label: string, href: string, fileName: string) {
+    if (!on) return;
+    list.push({
+      kind,
+      label,
+      href: href.trim() || undefined,
+      fileName: fileName.trim() || undefined,
+    });
+  }
+
+  function buildCredentials(): Credential[] {
+    const list: Credential[] = [];
+    if (entityType === "nonprofit") {
+      pushSeal(list, irsOn, "irs_determination", "IRS determination letter", irsHref, irsFile);
+      pushSeal(list, candidOn, "candid_gold", "Candid Gold", candidHref, candidFile);
+      pushSeal(list, bbbOn, "bbb_wise_giving", "BBB Wise Giving", bbbHref, bbbFile);
+    }
+    if (entityType === "for-profit") {
+      pushSeal(list, sosOn, "sos_filing", "State SOS filing", sosHref, sosFile);
+      pushSeal(list, einOn, "ein_verified", "EIN verified", einHref, einFile);
+    }
+    return list;
+  }
+
+  function buildProofs(): Proof[] {
+    return proofRows
+      .filter((r) => r.title.trim())
+      .map((r) => ({
+        title: r.title.trim(),
+        thirdParty: r.thirdParty,
+        href: r.href.trim() || undefined,
+        fileName: r.fileName.trim() || undefined,
+      }));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -242,11 +297,13 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
       modelType,
       subjects,
       successMeasures: [],
-      entityType: "other",
-      credentials: [],
-      proofs: [],
+      entityType,
+      credentials: buildCredentials(),
+      proofs: buildProofs(),
+      successMetric: successMetric.trim() || undefined,
       workKind,
       moneyKind,
+      example: false,
     });
   }
 
@@ -331,8 +388,98 @@ export function ListForm({ onSubmit, onCancel }: { onSubmit: (listing: Listing) 
         <Field label="Description">
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
         </Field>
+
+        <div className="pt-4 mt-2 border-t border-slate-200 space-y-4">
+          <div>
+            <h2 className="text-base font-bold text-slate-900">Credibility</h2>
+            <p className="text-sm text-slate-600 mt-1">Optional. Empty still publishes.</p>
+          </div>
+          <Field label="Legal shape">
+            <select value={entityType} onChange={(e) => setEntityType(e.target.value as EntityType)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3 bg-white">
+              <option value="other">Other</option>
+              <option value="nonprofit">Nonprofit 501(c)(3)</option>
+              <option value="for-profit">For-profit</option>
+            </select>
+          </Field>
+          {entityType === "nonprofit" && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-700">Seals / filings</p>
+              <SealRow label="IRS letter" on={irsOn} setOn={setIrsOn} href={irsHref} setHref={setIrsHref} fileName={irsFile} setFileName={setIrsFile} />
+              <SealRow label="Candid" on={candidOn} setOn={setCandidOn} href={candidHref} setHref={setCandidHref} fileName={candidFile} setFileName={setCandidFile} />
+              <SealRow label="BBB Wise Giving" on={bbbOn} setOn={setBbbOn} href={bbbHref} setHref={setBbbHref} fileName={bbbFile} setFileName={setBbbFile} />
+            </div>
+          )}
+          {entityType === "for-profit" && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-700">Seals / filings</p>
+              <SealRow label="SOS filing" on={sosOn} setOn={setSosOn} href={sosHref} setHref={setSosHref} fileName={sosFile} setFileName={setSosFile} />
+              <SealRow label="EIN" on={einOn} setOn={setEinOn} href={einHref} setHref={setEinHref} fileName={einFile} setFileName={setEinFile} />
+            </div>
+          )}
+          <Field label="Success claim">
+            <input value={successMetric} onChange={(e) => setSuccessMetric(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" placeholder="One sentence." />
+          </Field>
+          <div>
+            <p className="text-sm font-medium text-slate-700 mb-2">Proof</p>
+            <div className="space-y-3">
+              {proofRows.map((row, i) => (
+                <div key={i} className="rounded-md border border-slate-200 p-3 space-y-2">
+                  <input value={row.title} onChange={(e) => setProofRows((prev) => prev.map((r, idx) => idx === i ? { ...r, title: e.target.value } : r))} placeholder="Title" className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input value={row.href} onChange={(e) => setProofRows((prev) => prev.map((r, idx) => idx === i ? { ...r, href: e.target.value } : r))} placeholder="URL" className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
+                    <label className="block text-xs text-slate-500">
+                      File
+                      <input type="file" className="block w-full text-xs mt-1" onChange={(e) => setProofRows((prev) => prev.map((r, idx) => idx === i ? { ...r, fileName: e.target.files?.[0]?.name ?? "" } : r))} />
+                      {row.fileName ? <span className="block mt-1 text-slate-600">On file: {row.fileName}</span> : null}
+                    </label>
+                  </div>
+                  <label className="flex items-center gap-2 text-sm text-slate-700">
+                    <input type="checkbox" checked={row.thirdParty} onChange={(e) => setProofRows((prev) => prev.map((r, idx) => idx === i ? { ...r, thirdParty: e.target.checked } : r))} />
+                    Third-party
+                  </label>
+                </div>
+              ))}
+            </div>
+            <button type="button" onClick={() => setProofRows((prev) => [...prev, { title: "", href: "", fileName: "", thirdParty: false }])} className="mt-2 text-sm font-medium text-sky-700 hover:text-sky-800">
+              Add row
+            </button>
+          </div>
+        </div>
+
         <button type="submit" className="w-full py-2.5 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-700">Publish listing</button>
       </form>
+    </div>
+  );
+}
+
+
+function SealRow({
+  label, on, setOn, href, setHref, fileName, setFileName,
+}: {
+  label: string;
+  on: boolean;
+  setOn: (v: boolean) => void;
+  href: string;
+  setHref: (v: string) => void;
+  fileName: string;
+  setFileName: (v: string) => void;
+}) {
+  return (
+    <div className="rounded-md border border-slate-200 p-3 space-y-2">
+      <label className="flex items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} />
+        {label}
+      </label>
+      {on && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <input value={href} onChange={(e) => setHref(e.target.value)} placeholder="URL" className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
+          <label className="block text-xs text-slate-500">
+            File
+            <input type="file" className="block w-full text-xs mt-1" onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")} />
+            {fileName ? <span className="block mt-1 text-slate-600">On file: {fileName}</span> : null}
+          </label>
+        </div>
+      )}
     </div>
   );
 }
