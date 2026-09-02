@@ -43,6 +43,8 @@ export default function App() {
   const [showFilters, setShowFilters] = useState(false);
   const [cpkMin, setCpkMin] = useState<number | null>(null);
   const [cpkMax, setCpkMax] = useState<number | null>(null);
+  const [workKindFilter, setWorkKindFilter] = useState("");
+  const [moneyKindFilter, setMoneyKindFilter] = useState("");
 
   useEffect(() => {
     function onPop() {
@@ -76,9 +78,11 @@ export default function App() {
       const cpk = costPerKid(l);
       if (cpkMin != null && cpk < cpkMin) return false;
       if (cpkMax != null && cpk > cpkMax) return false;
+      if (workKindFilter && l.workKind !== workKindFilter) return false;
+      if (moneyKindFilter && l.moneyKind !== moneyKindFilter) return false;
       return true;
     });
-  }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, trustFilters, proofFilters, cpkMin, cpkMax]);
+  }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, trustFilters, proofFilters, cpkMin, cpkMax, workKindFilter, moneyKindFilter]);
 
   const selected = listings.find((l) => l.id === selectedId) ?? null;
   const states = Array.from(new Set(listings.map((l) => l.state).filter((s) => s !== "Multi"))).sort();
@@ -139,6 +143,8 @@ export default function App() {
     setProofFilters(patch.proofFilters);
     setCpkMin(patch.cpkMin);
     setCpkMax(patch.cpkMax);
+    setWorkKindFilter(patch.workKindFilter);
+    setMoneyKindFilter(patch.moneyKindFilter);
     setShowFilters(true);
     return patch.note;
   }
@@ -231,6 +237,10 @@ export default function App() {
             cpkMax={cpkMax}
             setCpkMin={setCpkMin}
             setCpkMax={setCpkMax}
+            workKindFilter={workKindFilter}
+            setWorkKindFilter={setWorkKindFilter}
+            moneyKindFilter={moneyKindFilter}
+            setMoneyKindFilter={setMoneyKindFilter}
             onOpen={openDetail}
             onAsk={onAsk}
           />
