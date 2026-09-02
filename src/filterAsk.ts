@@ -10,6 +10,8 @@ export type AskPatch = {
   proofFilters: string[];
   cpkMin: number | null;
   cpkMax: number | null;
+  workKindFilter: string;
+  moneyKindFilter: string;
   note: string;
 };
 
@@ -27,6 +29,8 @@ export function parseAsk(raw: string): AskPatch {
     proofFilters: [],
     cpkMin: null,
     cpkMax: null,
+    workKindFilter: "",
+    moneyKindFilter: "",
     note: "No matching filters. Try a state, a category, cheap, proof, or a seal.",
   };
   if (!q) return patch;
@@ -107,6 +111,28 @@ export function parseAsk(raw: string): AskPatch {
   } else if (/\b(cheap|low cost|inexpensive|affordable)\b/.test(q)) {
     patch.cpkMax = 3000;
     hits.push("cheap (under $3,000 per child)");
+  }
+
+  if (/\b(ownership|venture|private equity|equity|stake)\b/.test(q)) {
+    patch.moneyKindFilter = "ownership";
+    hits.push("Ownership");
+  } else if (/\beither\b/.test(q)) {
+    patch.moneyKindFilter = "either";
+    hits.push("Either");
+  } else if (/\bgift\b/.test(q)) {
+    patch.moneyKindFilter = "gift";
+    hits.push("Gift");
+  }
+
+  if (/\b(company|startup|edtech)\b/.test(q)) {
+    patch.workKindFilter = "company";
+    hits.push("Company");
+  } else if (/\b(place|center|facility|building)\b/.test(q)) {
+    patch.workKindFilter = "place";
+    hits.push("Place");
+  } else if (/\bprogram\b/.test(q)) {
+    patch.workKindFilter = "program";
+    hits.push("Program");
   }
 
   if (hits.length) patch.note = `Set ${hits.join(", ")}.`;
