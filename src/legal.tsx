@@ -42,12 +42,13 @@ export function TermsView({ onBack }: PageProps) {
 export function AboutView({ onBack }: PageProps) {
   return (
     <LegalShell title="About" onBack={onBack}>
-      <p>Fund the Kid is an open marketplace for education capital.</p>
-      <p>If work helps kids learn, it can be listed.</p>
-      <p>Public, private, charter, micro, supplemental, for-profit, nonprofit.</p>
-      <p>Donors browse, compare cost per child, and go to the work.</p>
-      <p>Operators list without a gatekeeper.</p>
-      <p>Listings on this site are examples.</p>
+      <p>Fund the Kid helps people give money straight to work that helps kids learn. No gatekeeper in the middle.</p>
+      <p>Browse on your own. Compare cost per child. Give to the project.</p>
+      <p>
+        Schools and programs list without waiting for a foundation to pick winners. Public, private, charter, micro,
+        extra help, for-profit, nonprofit. If it helps kids learn, it belongs here.
+      </p>
+      <p>More of every dollar reaches the kid. Listings on this site are examples.</p>
     </LegalShell>
   );
 }
