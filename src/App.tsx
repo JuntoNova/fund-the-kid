@@ -65,10 +65,11 @@ export default function App() {
               setView("browse");
               setSelectedId(null);
             }}
-            className="flex items-center gap-2.5 text-[#2A3D55] font-display font-semibold tracking-tight text-[17px]"
+            className="flex items-center text-[#2A3D55]"
           >
-            <img src="/mark.svg" alt="" className="w-9 h-9" />
-            Fund the Kid
+            <span className="font-logo text-[34px] leading-none tracking-tight" style={{ color: "#2A3D55" }}>
+              Fund the Kid
+            </span>
           </button>
           <nav className="flex items-center gap-2">
             <button
