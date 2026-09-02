@@ -1,3 +1,5 @@
+import { LISTING_TRUST } from "./listingTrust";
+
 export type ModelType =
   | "Microschool"
   | "Charter"
@@ -23,6 +25,31 @@ export const SUCCESS_MEASURES = [
 
 export type SuccessMeasure = (typeof SUCCESS_MEASURES)[number];
 
+export type EntityType = "nonprofit" | "for-profit" | "other";
+
+export type CredentialKind =
+  | "candid_gold"
+  | "bbb_wise_giving"
+  | "irs_determination"
+  | "form_990"
+  | "sos_filing"
+  | "ein_verified"
+  | "bbb_business";
+
+export type Credential = {
+  kind: CredentialKind;
+  label: string;
+  checkedAt?: string;
+  href?: string;
+};
+
+export type Proof = {
+  title: string;
+  thirdParty: boolean;
+  href?: string;
+  measure?: SuccessMeasure;
+};
+
 export type Listing = {
   id: string;
   title: string;
@@ -40,13 +67,16 @@ export type Listing = {
   organization?: string;
   contactEmail?: string;
   successMetric?: string;
+  entityType: EntityType;
+  credentials: Credential[];
+  proofs: Proof[];
 };
 
 function monthsFromYears(years: number): number {
   return Math.round(years * 12);
 }
 
-export const LISTINGS: Listing[] = [
+const RAW: Omit<Listing, "entityType" | "credentials" | "proofs">[] = [
   {
     id: "1",
     title: "Austin STEM Microschool Network Expansion",
@@ -265,6 +295,16 @@ export const LISTINGS: Listing[] = [
   },
 ];
 
+export const LISTINGS: Listing[] = RAW.map((l) => {
+  const trust = LISTING_TRUST[l.id];
+  return {
+    ...l,
+    entityType: trust?.entityType ?? "other",
+    credentials: (trust?.credentials ?? []) as Listing["credentials"],
+    proofs: (trust?.proofs ?? []) as Listing["proofs"],
+  };
+});
+
 export function costPerKid(listing: Listing): number {
   return Math.round(listing.amountSeeking / listing.kidsServed);
 }
@@ -289,4 +329,122 @@ export function formatHorizon(listing: Listing): string {
   const yearPart = years === 1 ? "1 year" : `${years} years`;
   const monthPart = rem === 1 ? "1 month" : `${rem} months`;
   return `${yearPart} ${monthPart}`;
+}
+
+export function isVerifiedEntity(listing: Listing): boolean {
+  const creds = listing.credentials ?? [];
+  if (creds.length > 0) return true;
+  return listing.entityType === "nonprofit" || listing.entityType === "for-profit";
+}
+
+export function isNonprofit(listing: Listing): boolean {
+  return listing.entityType === "nonprofit";
+}
+
+export function isForProfitStateFiled(listing: Listing): boolean {
+  if (listing.entityType !== "for-profit") return false;
+  return (listing.credentials ?? []).some((c) => c.kind === "sos_filing");
+}
+
+export function hasThirdPartySeal(listing: Listing): boolean {
+  return (listing.credentials ?? []).some(
+    (c) => c.kind === "candid_gold" || c.kind === "bbb_wise_giving",
+  );
+}
+
+export function hasOutcomeProof(listing: Listing): boolean {
+  return (listing.proofs ?? []).some((p) => p.thirdParty && Boolean(p.href));
+}
+
+export function isClaimOnly(listing: Listing): boolean {
+  return (listing.proofs ?? []).some((p) => !p.href);
+}
+
+export function matchesSuccessMeasure(listing: Listing, measure: string): boolean {
+  if ((listing.successMeasures ?? []).includes(measure as SuccessMeasure)) return true;
+  return (listing.proofs ?? []).some((p) => p.measure === measure);
+}
+
+export type TrustBadgeStyle = "entity" | "candid" | "bbb" | "proof" | "ein" | "self" | "example";
+
+export type TrustBadge = {
+  label: string;
+  style: TrustBadgeStyle;
+};
+
+export function listingTrustBadges(listing: Listing): TrustBadge[] {
+  const badges: TrustBadge[] = [];
+  const creds = listing.credentials ?? [];
+
+  if (listing.entityType === "nonprofit") {
+    badges.push({ label: "Nonprofit · 501(c)(3)", style: "entity" });
+  } else if (listing.entityType === "for-profit") {
+    const sos = creds.some((c) => c.kind === "sos_filing");
+    const state = listing.state && listing.state !== "Multi" ? listing.state : "";
+    badges.push({
+      label: sos && state ? `For-profit · ${state} SOS` : "For-profit",
+      style: "entity",
+    });
+  } else if (listing.entityType === "other") {
+    badges.push({ label: "Other", style: "entity" });
+  }
+
+  const seals: TrustBadge[] = [];
+  if (creds.some((c) => c.kind === "candid_gold")) seals.push({ label: "Candid Gold", style: "candid" });
+  if (creds.some((c) => c.kind === "bbb_wise_giving")) seals.push({ label: "BBB Wise Giving", style: "bbb" });
+  if (creds.some((c) => c.kind === "ein_verified")) seals.push({ label: "EIN verified", style: "ein" });
+  if (creds.some((c) => c.kind === "bbb_business")) seals.push({ label: "BBB Business", style: "ein" });
+  badges.push(...seals.slice(0, 3));
+
+  if (hasOutcomeProof(listing)) {
+    badges.push({ label: "Proof on file", style: "proof" });
+  } else if (isClaimOnly(listing)) {
+    badges.push({ label: "Self-reported · no file", style: "self" });
+  }
+
+  badges.push({ label: "Example", style: "example" });
+  return badges;
+}
+
+export type ProofRow = {
+  title: string;
+  href?: string;
+  linkLabel: string;
+};
+
+const FILE_CREDENTIAL_KINDS: CredentialKind[] = [
+  "irs_determination",
+  "form_990",
+  "sos_filing",
+  "candid_gold",
+];
+
+function credentialRow(c: Credential): ProofRow {
+  const title =
+    c.kind === "candid_gold"
+      ? `Candid Gold Seal${c.checkedAt ? ` · checked ${c.checkedAt}` : ""}`
+      : c.label;
+  const linkLabel = c.href
+    ? c.kind === "candid_gold"
+      ? "Candid profile"
+      : "Open file"
+    : "No third-party file";
+  return { title, href: c.href, linkLabel };
+}
+
+function proofRow(p: Proof): ProofRow {
+  return {
+    title: p.title,
+    href: p.href,
+    linkLabel: p.href ? "Open file" : "No third-party file",
+  };
+}
+
+export function listingProofRows(listing: Listing): ProofRow[] {
+  const proofs = (listing.proofs ?? []).map(proofRow);
+  const files = (listing.credentials ?? [])
+    .filter((c) => FILE_CREDENTIAL_KINDS.includes(c.kind))
+    .map(credentialRow);
+  if (listing.entityType === "for-profit") return [...files, ...proofs];
+  return [...proofs, ...files];
 }

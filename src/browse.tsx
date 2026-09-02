@@ -8,6 +8,50 @@ import { KidValueChart, CostPerKidSlider, ListingCard, SUBJECTS } from "./insigh
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
+const TRUST_CHIPS: { id: string; label: string }[] = [
+  { id: "verified", label: "Verified entity" },
+  { id: "nonprofit", label: "501(c)(3)" },
+  { id: "for_profit_filed", label: "For-profit, state filed" },
+  { id: "third_party_seal", label: "Has third-party seal" },
+];
+
+const PROOF_MEASURE_CHIPS: { measure: string; label: string }[] = [
+  { measure: "Independent assessments", label: "Independent assessment" },
+  { measure: "State assessments", label: "State scores" },
+  { measure: "Credentials", label: "Job / credential" },
+];
+
+function Chip({
+  label,
+  on,
+  warn,
+  onClick,
+}: {
+  label: string;
+  on: boolean;
+  warn?: boolean;
+  onClick: () => void;
+}) {
+  const cls = on
+    ? "bg-[#e8f4fb] border-[#4A94C8] text-[#2A3D55]"
+    : warn
+      ? "bg-[#fdeef3] border-[#e7b3c3] text-[#2A3D55]"
+      : "bg-white border-[#d9d0c4] text-[#2A3D55]";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-3 py-1.5 text-[13px] font-bold border ${cls}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function toggleId(list: string[], id: string): string[] {
+  return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+}
+
 export function BrowseView(props: {
   listings: Listing[];
   allListings: Listing[];
@@ -21,6 +65,10 @@ export function BrowseView(props: {
   setSubjectFilter: (v: string) => void;
   successFilter: string;
   setSuccessFilter: (v: string) => void;
+  trustFilters: string[];
+  setTrustFilters: (v: string[]) => void;
+  proofFilters: string[];
+  setProofFilters: (v: string[]) => void;
   states: string[];
   showFilters: boolean;
   setShowFilters: (v: boolean) => void;
@@ -33,10 +81,15 @@ export function BrowseView(props: {
   const {
     listings, allListings, query, setQuery, stateFilter, setStateFilter,
     modelFilter, setModelFilter, subjectFilter, setSubjectFilter,
-    successFilter, setSuccessFilter, states,
+    successFilter, setSuccessFilter, trustFilters, setTrustFilters,
+    proofFilters, setProofFilters, states,
     showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax, onOpen,
   } = props;
-  const activeFilters = [stateFilter, subjectFilter, successFilter].filter(Boolean).length + (cpkMin != null || cpkMax != null ? 1 : 0);
+  const activeFilters =
+    [stateFilter, subjectFilter, successFilter].filter(Boolean).length
+    + (cpkMin != null || cpkMax != null ? 1 : 0)
+    + trustFilters.length
+    + proofFilters.length;
 
   return (
     <div>
@@ -61,7 +114,8 @@ export function BrowseView(props: {
       </div>
 
       {showFilters && (
-        <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">State</label>
             <select value={stateFilter} onChange={(e) => setStateFilter(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-2 bg-white">
@@ -83,6 +137,47 @@ export function BrowseView(props: {
               {SUCCESS_MEASURES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-[11px] font-bold text-[#7a8794] mb-2">Trust the organization</p>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {TRUST_CHIPS.map((c) => (
+                <Chip
+                  key={c.id}
+                  label={c.label}
+                  on={trustFilters.includes(c.id)}
+                  onClick={() => setTrustFilters(toggleId(trustFilters, c.id))}
+                />
+              ))}
+            </div>
+            <p className="text-[11px] font-bold text-[#7a8794] mb-2">Prove the work</p>
+            <div className="flex flex-wrap gap-2">
+              <Chip
+                label="Has outcome proof"
+                on={proofFilters.includes("outcome")}
+                onClick={() => setProofFilters(toggleId(proofFilters, "outcome"))}
+              />
+              {PROOF_MEASURE_CHIPS.map((c) => (
+                <Chip
+                  key={c.measure}
+                  label={c.label}
+                  on={successFilter === c.measure}
+                  onClick={() => setSuccessFilter(successFilter === c.measure ? "" : c.measure)}
+                />
+              ))}
+              <Chip
+                label="Claim only · no file"
+                warn
+                on={proofFilters.includes("claim_only")}
+                onClick={() => setProofFilters(toggleId(proofFilters, "claim_only"))}
+              />
+            </div>
+            <p className="text-xs text-[#7a8794] mt-3">
+              Charity seals only on nonprofits. For-profits get state filing, EIN, and optional BBB Business. A claim without a file still lists. Donors who care filter it out.
+            </p>
+          </div>
+
         </div>
       )}
 
@@ -94,7 +189,7 @@ export function BrowseView(props: {
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
         {activeFilters > 0 && (
-          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setCpkMin(null); setCpkMax(null); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
+          <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setTrustFilters([]); setProofFilters([]); setCpkMin(null); setCpkMax(null); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
         )}

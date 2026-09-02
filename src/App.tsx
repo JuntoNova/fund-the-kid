@@ -2,6 +2,13 @@ import { useMemo, useState } from "react";
 import {
   LISTINGS,
   costPerKid,
+  isVerifiedEntity,
+  isNonprofit,
+  isForProfitStateFiled,
+  hasThirdPartySeal,
+  hasOutcomeProof,
+  isClaimOnly,
+  matchesSuccessMeasure,
 } from "./data/listings";
 import type { Listing } from "./data/listings";
 import { BrowseView } from "./browse";
@@ -20,6 +27,8 @@ export default function App() {
   const [modelFilter, setModelFilter] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("");
   const [successFilter, setSuccessFilter] = useState("");
+  const [trustFilters, setTrustFilters] = useState<string[]>([]);
+  const [proofFilters, setProofFilters] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(true);
   const [cpkMin, setCpkMin] = useState<number | null>(null);
   const [cpkMax, setCpkMax] = useState<number | null>(null);
@@ -28,19 +37,26 @@ export default function App() {
     return listings.filter((l) => {
       if (query) {
         const q = query.toLowerCase();
-        const hay = `${l.title} ${l.description} ${l.organization ?? ""} ${l.metro} ${l.state} ${l.successMetric ?? ""}`.toLowerCase();
+        const proofText = (l.proofs ?? []).map((p) => p.title).join(" ");
+        const hay = `${l.title} ${l.description} ${l.organization ?? ""} ${l.metro} ${l.state} ${l.successMetric ?? ""} ${proofText}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       if (stateFilter && l.state !== stateFilter) return false;
       if (modelFilter && l.modelType !== modelFilter) return false;
       if (subjectFilter && !l.subjects.includes(subjectFilter)) return false;
-      if (successFilter && !(l.successMeasures ?? []).includes(successFilter as Listing["successMeasures"][number])) return false;
+      if (successFilter && !matchesSuccessMeasure(l, successFilter)) return false;
+      if (trustFilters.includes("verified") && !isVerifiedEntity(l)) return false;
+      if (trustFilters.includes("nonprofit") && !isNonprofit(l)) return false;
+      if (trustFilters.includes("for_profit_filed") && !isForProfitStateFiled(l)) return false;
+      if (trustFilters.includes("third_party_seal") && !hasThirdPartySeal(l)) return false;
+      if (proofFilters.includes("outcome") && !hasOutcomeProof(l)) return false;
+      if (proofFilters.includes("claim_only") && !isClaimOnly(l)) return false;
       const cpk = costPerKid(l);
       if (cpkMin != null && cpk < cpkMin) return false;
       if (cpkMax != null && cpk > cpkMax) return false;
       return true;
     });
-  }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, cpkMin, cpkMax]);
+  }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, trustFilters, proofFilters, cpkMin, cpkMax]);
 
   const selected = listings.find((l) => l.id === selectedId) ?? null;
   const states = Array.from(new Set(listings.map((l) => l.state).filter((s) => s !== "Multi"))).sort();
@@ -106,6 +122,10 @@ export default function App() {
             setSubjectFilter={setSubjectFilter}
             successFilter={successFilter}
             setSuccessFilter={setSuccessFilter}
+            trustFilters={trustFilters}
+            setTrustFilters={setTrustFilters}
+            proofFilters={proofFilters}
+            setProofFilters={setProofFilters}
             states={states}
             showFilters={showFilters}
             setShowFilters={setShowFilters}
