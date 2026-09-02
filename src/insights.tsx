@@ -25,6 +25,7 @@ const BADGE_STYLE: Record<TrustBadgeStyle, { bg: string; color: string }> = {
   self: { bg: "#F3C6D4", color: "#2A3D55" },
   example: { bg: "transparent", color: "#8a94a0" },
   money: { bg: "#e8f4fb", color: "#2A3D55" },
+  work: { bg: "#C5DCCE", color: "#2A3D55" },
 };
 
 export function TrustBadgeRow({ listing, compact }: { listing: Listing; compact?: boolean }) {
@@ -34,7 +35,7 @@ export function TrustBadgeRow({ listing, compact }: { listing: Listing; compact?
     <div className="flex flex-wrap items-center gap-1.5">
       {badges.map((b) => {
         const s = BADGE_STYLE[b.style];
-        const extra = b.style === "example" || b.style === "money" ? "border border-slate-200 font-semibold tracking-wide" : "";
+        const extra = b.style === "example" || b.style === "money" || b.style === "work" ? "border border-slate-200 font-semibold tracking-wide" : "";
         return (
           <span
             key={`${b.style}-${b.label}`}
