@@ -38,3 +38,16 @@ export function TermsView({ onBack }: PageProps) {
     </LegalShell>
   );
 }
+
+export function AboutView({ onBack }: PageProps) {
+  return (
+    <LegalShell title="About" onBack={onBack}>
+      <p>Fund the Kid is an open marketplace for education capital.</p>
+      <p>If work helps kids learn, it can be listed.</p>
+      <p>Public, private, charter, micro, supplemental, for-profit, nonprofit.</p>
+      <p>Donors browse, compare cost per child, and go to the work.</p>
+      <p>Operators list without a gatekeeper.</p>
+      <p>Listings on this site are examples.</p>
+    </LegalShell>
+  );
+}

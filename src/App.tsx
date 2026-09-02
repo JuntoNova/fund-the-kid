@@ -13,16 +13,17 @@ import {
 import type { Listing } from "./data/listings";
 import { BrowseView } from "./browse";
 import { DetailView, ListForm } from "./forms";
-import { PrivacyView, TermsView } from "./legal";
+import { PrivacyView, TermsView, AboutView } from "./legal";
 import { parseAsk } from "./filterAsk";
-import { Plus } from "lucide-react";
+import { Menu } from "lucide-react";
 
-type View = "browse" | "detail" | "list" | "privacy" | "terms";
+type View = "browse" | "detail" | "list" | "privacy" | "terms" | "about";
 
 function viewFromPath(path: string): View {
   const p = path.replace(/\/$/, "") || "/";
   if (p === "/privacy") return "privacy";
   if (p === "/terms") return "terms";
+  if (p === "/about") return "about";
   return "browse";
 }
 
@@ -30,6 +31,7 @@ export default function App() {
   const [view, setView] = useState<View>(() => viewFromPath(window.location.pathname));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>(LISTINGS);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState("");
@@ -46,6 +48,7 @@ export default function App() {
     function onPop() {
       const next = viewFromPath(window.location.pathname);
       setView(next);
+      setMenuOpen(false);
       if (next === "browse") setSelectedId(null);
     }
     window.addEventListener("popstate", onPop);
@@ -80,25 +83,45 @@ export default function App() {
   const selected = listings.find((l) => l.id === selectedId) ?? null;
   const states = Array.from(new Set(listings.map((l) => l.state).filter((s) => s !== "Multi"))).sort();
 
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   function goBrowse() {
     if (window.location.pathname !== "/") window.history.pushState({}, "", "/");
     setView("browse");
     setSelectedId(null);
+    closeMenu();
+  }
+
+  function goList() {
+    if (window.location.pathname !== "/") window.history.pushState({}, "", "/");
+    setView("list");
+    closeMenu();
+  }
+
+  function goAbout() {
+    window.history.pushState({}, "", "/about");
+    setView("about");
+    closeMenu();
   }
 
   function goPrivacy() {
     window.history.pushState({}, "", "/privacy");
     setView("privacy");
+    closeMenu();
   }
 
   function goTerms() {
     window.history.pushState({}, "", "/terms");
     setView("terms");
+    closeMenu();
   }
 
   function openDetail(id: string) {
     setSelectedId(id);
     setView("detail");
+    closeMenu();
   }
 
   function handleNewListing(listing: Listing) {
@@ -120,35 +143,65 @@ export default function App() {
     return patch.note;
   }
 
+  const menuItem = (label: string, on: boolean, onClick: () => void) => (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`block w-full text-left px-4 py-2.5 text-sm font-medium ${
+        on ? "bg-sky-100 text-[#2A3D55]" : "text-[#2A3D55] hover:bg-[#e8f4fb]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#F6F1E8" }}>
       <header className="border-b border-sky-100 bg-white/90 backdrop-blur sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
           <button
+            type="button"
             onClick={goBrowse}
-            className="flex items-center text-[#2A3D55]"
+            className="min-w-0 flex items-center text-[#2A3D55]"
+            aria-label="Fund the Kid home"
           >
-            <span className="font-logo text-[34px] leading-none tracking-tight" style={{ color: "#2A3D55" }}>
+            <span
+              className="font-logo whitespace-nowrap text-[26px] sm:text-[34px] leading-none tracking-tight"
+              style={{ color: "#2A3D55" }}
+            >
               Fund the Kid
             </span>
           </button>
-          <nav className="flex items-center gap-2">
+          <div className="relative shrink-0">
             <button
-              onClick={goBrowse}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                view === "browse" ? "bg-sky-100 text-[#2A3D55]" : "text-slate-600 hover:text-[#2A3D55]"
-              }`}
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="w-10 h-10 inline-flex items-center justify-center rounded-full text-[#2A3D55] hover:bg-sky-100"
+              aria-label="Menu"
+              aria-expanded={menuOpen}
+              aria-haspopup="true"
             >
-              Browse
+              <Menu className="w-5 h-5" />
             </button>
-            <button
-              onClick={() => setView("list")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-sky-600 text-white hover:bg-sky-700"
-            >
-              <Plus className="w-4 h-4" />
-              List opportunity
-            </button>
-          </nav>
+            {menuOpen && (
+              <>
+                <button
+                  type="button"
+                  className="fixed inset-0 z-30 bg-black/20 sm:bg-transparent"
+                  aria-label="Close menu"
+                  onClick={closeMenu}
+                />
+                <div
+                  className="fixed sm:absolute z-40 left-4 right-4 sm:left-auto sm:right-0 top-[4.25rem] sm:top-full sm:mt-2 sm:w-56 rounded-xl border border-sky-100 bg-white shadow-lg py-1"
+                  role="menu"
+                >
+                  {menuItem("Browse", view === "browse" || view === "detail", goBrowse)}
+                  {menuItem("List opportunity", view === "list", goList)}
+                  {menuItem("About", view === "about", goAbout)}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -190,6 +243,7 @@ export default function App() {
         )}
         {view === "privacy" && <PrivacyView onBack={goBrowse} />}
         {view === "terms" && <TermsView onBack={goBrowse} />}
+        {view === "about" && <AboutView onBack={goBrowse} />}
       </main>
 
       <footer className="max-w-6xl mx-auto px-4 py-6 w-full text-sm text-[#2A3D55]">
