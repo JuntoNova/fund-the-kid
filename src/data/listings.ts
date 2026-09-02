@@ -56,12 +56,14 @@ export type Credential = {
   label: string;
   checkedAt?: string;
   href?: string;
+  fileName?: string;
 };
 
 export type Proof = {
   title: string;
   thirdParty: boolean;
   href?: string;
+  fileName?: string;
   measure?: SuccessMeasure;
 };
 
@@ -87,6 +89,7 @@ export type Listing = {
   proofs: Proof[];
   workKind: WorkKind;
   moneyKind: MoneyKind;
+  example?: boolean;
 };
 
 function monthsFromYears(years: number): number {
@@ -317,7 +320,7 @@ const RAW: RawListing[] = [
   },
   {
     id: "13",
-    title: "Houston STEM Lab and Center",
+    title: "Houston STEM Center Buildout",
     amountSeeking: 1800000,
     amountFunded: 400000,
     kidsServed: 900,
@@ -326,38 +329,38 @@ const RAW: RawListing[] = [
     state: "TX",
     metro: "Houston",
     description:
-      "Open a shared STEM lab and center in Houston. Benches, tools, and rooms stay on site for schools and after-school groups. Funds cover build-out, equipment, and two years of staff.",
+      "Build out a shared STEM center in Houston, TX. Labs, tools, and rooms stay on site for schools and after-school groups. Funds cover construction, equipment, and two years of staff.",
     modelType: "Other",
     subjects: ["STEM", "Innovation"],
     successMeasures: ["Enrollment", "Parent satisfaction"],
-    organization: "Gulf Coast STEM Center",
+    organization: "Houston STEM Center",
     successMetric: "900 students use the lab each year by year 3",
     workKind: "place",
     moneyKind: "either",
   },
   {
     id: "14",
-    title: "Northside After-School Rec Center",
+    title: "East Austin Community Rec House",
     amountSeeking: 420000,
     amountFunded: 90000,
     kidsServed: 650,
     timeHorizonYears: 2,
     timeHorizonMonths: 24,
-    state: "OH",
-    metro: "Cleveland",
+    state: "TX",
+    metro: "Austin",
     description:
-      "Keep a neighborhood rec center open after school. Courts, rooms, and staff for homework, sports, and meals. Gift funds cover rent, coaches, and snacks.",
+      "Keep a neighborhood rec house open after school in East Austin. Courts, rooms, and staff for homework, sports, and meals. Gift funds cover rent, coaches, and snacks.",
     modelType: "Supplemental",
     subjects: ["Athletics", "Tutoring"],
     successMeasures: ["Enrollment", "Parent satisfaction"],
-    organization: "Northside Rec Alliance",
+    organization: "East Austin Rec House",
     successMetric: "650 children attend at least two days a week",
     workKind: "place",
     moneyKind: "gift",
   },
   {
     id: "15",
-    title: "ReadPath Learning Tools (Seed)",
+    title: "Lumen Practice Seed",
     amountSeeking: 4500000,
     amountFunded: 800000,
     kidsServed: 12000,
@@ -366,11 +369,11 @@ const RAW: RawListing[] = [
     state: "TX",
     metro: "Austin",
     description:
-      "A for-profit learning-tool company building reading software for tutors and small schools. Seed round for product, sales, and two years of runway. Owners buy a stake. This is not a gift.",
+      "A for-profit practice building tools for tutors and small schools. Seed round for product, sales, and two years of runway. Owners buy a stake. This is not a gift.",
     modelType: "For-profit",
     subjects: ["Literacy", "Innovation"],
     successMeasures: ["Enrollment", "Grade-level growth"],
-    organization: "ReadPath Inc.",
+    organization: "Lumen Practice",
     successMetric: "12,000 students on the tool by month 36 with measured reading growth",
     workKind: "company",
     moneyKind: "ownership",
@@ -386,6 +389,7 @@ export const LISTINGS: Listing[] = RAW.map((l) => {
     proofs: (trust?.proofs ?? []) as Listing["proofs"],
     workKind: l.workKind ?? "program",
     moneyKind: l.moneyKind ?? "gift",
+    example: l.example ?? true,
   };
 });
 
@@ -436,12 +440,16 @@ export function hasThirdPartySeal(listing: Listing): boolean {
   );
 }
 
+function hasFile(p: { href?: string; fileName?: string }): boolean {
+  return Boolean(p.href) || Boolean(p.fileName);
+}
+
 export function hasOutcomeProof(listing: Listing): boolean {
-  return (listing.proofs ?? []).some((p) => p.thirdParty && Boolean(p.href));
+  return (listing.proofs ?? []).some((p) => hasFile(p));
 }
 
 export function isClaimOnly(listing: Listing): boolean {
-  return (listing.proofs ?? []).some((p) => !p.href);
+  return (listing.proofs ?? []).some((p) => !hasFile(p));
 }
 
 export function matchesSuccessMeasure(listing: Listing, measure: string): boolean {
@@ -449,7 +457,7 @@ export function matchesSuccessMeasure(listing: Listing, measure: string): boolea
   return (listing.proofs ?? []).some((p) => p.measure === measure);
 }
 
-export type TrustBadgeStyle = "entity" | "candid" | "bbb" | "proof" | "ein" | "self" | "example" | "money";
+export type TrustBadgeStyle = "entity" | "candid" | "bbb" | "proof" | "ein" | "self" | "example" | "money" | "work";
 
 export type TrustBadge = {
   label: string;
@@ -486,7 +494,14 @@ export function listingTrustBadges(listing: Listing): TrustBadge[] {
     badges.push({ label: "Self-reported · no file", style: "self" });
   }
 
-  badges.push({ label: "Example", style: "example" });
+  const work = listing.workKind ?? "program";
+  if (work === "place" || work === "company") {
+    badges.push({ label: WORK_KIND_LABELS[work], style: "work" });
+  }
+  const money = listing.moneyKind ?? "gift";
+  badges.push({ label: MONEY_KIND_LABELS[money], style: "money" });
+
+  if (listing.example) badges.push({ label: "Example", style: "example" });
   return badges;
 }
 
@@ -512,7 +527,9 @@ function credentialRow(c: Credential): ProofRow {
     ? c.kind === "candid_gold"
       ? "Candid profile"
       : "Open file"
-    : "No third-party file";
+    : c.fileName
+      ? "Proof on file"
+      : "No third-party file";
   return { title, href: c.href, linkLabel };
 }
 
@@ -520,14 +537,14 @@ function proofRow(p: Proof): ProofRow {
   return {
     title: p.title,
     href: p.href,
-    linkLabel: p.href ? "Open file" : "No third-party file",
+    linkLabel: p.href ? "Open file" : p.fileName ? "Proof on file" : "No third-party file",
   };
 }
 
 export function listingProofRows(listing: Listing): ProofRow[] {
   const proofs = (listing.proofs ?? []).map(proofRow);
   const files = (listing.credentials ?? [])
-    .filter((c) => FILE_CREDENTIAL_KINDS.includes(c.kind))
+    .filter((c) => FILE_CREDENTIAL_KINDS.includes(c.kind) || Boolean(c.fileName))
     .map(credentialRow);
   if (listing.entityType === "for-profit") return [...files, ...proofs];
   return [...proofs, ...files];
