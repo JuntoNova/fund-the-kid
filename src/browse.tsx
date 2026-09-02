@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { Listing } from "./data/listings";
 import { SUCCESS_MEASURES } from "./data/listings";
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
@@ -52,6 +52,7 @@ function toggleId(list: string[], id: string): string[] {
   return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
 }
 
+
 export function BrowseView(props: {
   listings: Listing[];
   allListings: Listing[];
@@ -77,13 +78,14 @@ export function BrowseView(props: {
   setCpkMin: (v: number | null) => void;
   setCpkMax: (v: number | null) => void;
   onOpen: (id: string) => void;
+  onAsk: (text: string) => string;
 }) {
   const {
     listings, allListings, query, setQuery, stateFilter, setStateFilter,
     modelFilter, setModelFilter, subjectFilter, setSubjectFilter,
     successFilter, setSuccessFilter, trustFilters, setTrustFilters,
     proofFilters, setProofFilters, states,
-    showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax, onOpen,
+    showFilters, setShowFilters, cpkMin, cpkMax, setCpkMin, setCpkMax, onOpen, onAsk,
   } = props;
   const activeFilters =
     [stateFilter, subjectFilter, successFilter].filter(Boolean).length
@@ -93,28 +95,22 @@ export function BrowseView(props: {
 
   return (
     <div>
-      <div className="mb-5">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Fund the Kid</h1>
-        <p className="mt-2 text-slate-600 text-[15px] leading-relaxed max-w-3xl">
-          A place to invest in education. If it helps kids learn, it can be listed here:
-          public, private, charter, micro, supplemental, for-profit, or anything in between.
-          Donors browse, compare cost to serve each child, and go straight to the work.
-        </p>
-      </div>
+      <p className="mb-5 text-[15px] text-[#2A3D55]">Invest in work that helps kids learn.</p>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by title, place, organization…" className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search title, place, organization." className="w-full pl-10 pr-3 py-2.5 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500" />
         </div>
-        <button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center gap-2 px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50">
+        <button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-[#e8f4fb] text-[#2A3D55] text-sm font-bold hover:bg-[#d9eef8]">
           <Filter className="w-4 h-4" /> Filters
-          {activeFilters > 0 && <span className="ml-1 w-5 h-5 rounded-full bg-sky-600 text-white text-xs flex items-center justify-center">{activeFilters}</span>}
+          {activeFilters > 0 && <span className="ml-1 w-5 h-5 rounded-full bg-[#4A94C8] text-white text-xs flex items-center justify-center">{activeFilters}</span>}
         </button>
       </div>
 
       {showFilters && (
         <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white">
+          <AskPanel onAsk={onAsk} />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">State</label>
@@ -178,6 +174,9 @@ export function BrowseView(props: {
             </p>
           </div>
 
+          <div className="mt-4">
+            <CostPerKidSlider listings={allListings} cpkMin={cpkMin} cpkMax={cpkMax} setCpkMin={setCpkMin} setCpkMax={setCpkMax} />
+          </div>
         </div>
       )}
 
@@ -188,14 +187,14 @@ export function BrowseView(props: {
 
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
-        {activeFilters > 0 && (
+        {activeFilters > 0 ? (
           <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setTrustFilters([]); setProofFilters([]); setCpkMin(null); setCpkMax(null); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
+        ) : (
+          <p className="text-sm text-slate-400">Click a state or a category to filter</p>
         )}
       </div>
-
-      <CostPerKidSlider listings={allListings} cpkMin={cpkMin} cpkMax={cpkMax} setCpkMin={setCpkMin} setCpkMax={setCpkMax} />
 
       <div className="grid gap-3">
         {listings.map((l) => <ListingCard key={l.id} listing={l} onClick={() => onOpen(l.id)} />)}
@@ -289,5 +288,33 @@ function MapPanel({
         </div>
       )}
     </div>
+  );
+}
+
+function AskPanel({ onAsk }: { onAsk: (text: string) => string }) {
+  const [text, setText] = useState("");
+  const [note, setNote] = useState("");
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    const next = onAsk(text);
+    setNote(next);
+  }
+  return (
+    <form onSubmit={submit} className="mb-4 pb-4 border-b border-[#f0e9de]">
+      <label className="block text-[11px] font-bold text-[#7a8794] mb-2">Ask</label>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="literacy in Texas with proof"
+          className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500"
+        />
+        <button type="submit" className="rounded-lg px-4 py-2.5 text-sm font-bold bg-[#4A94C8] text-white hover:bg-[#3d86b8]">
+          Set filters
+        </button>
+      </div>
+      <p className="text-xs text-[#7a8794] mt-2">Examples: literacy in Texas with proof. For-profit with a state filing. Cheap STEM with a seal.</p>
+      {note ? <p className="text-sm text-[#2A3D55] mt-2">{note}</p> : null}
+    </form>
   );
 }
