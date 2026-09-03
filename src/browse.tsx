@@ -4,7 +4,7 @@ import { SUCCESS_MEASURES, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/li
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Search, Filter, X } from "lucide-react";
-import { KidValueChart, CostPerKidSlider, ListingCard, SUBJECTS } from "./insights";
+import { CostPerKidSlider, ListingCard, SUBJECTS } from "./insights";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -200,11 +200,8 @@ export function BrowseView(props: {
         </div>
       )}
 
-      <div className="mb-4">
-        <MapPanel listings={allListings} visible={listings} stateFilter={stateFilter} modelFilter={modelFilter} subjectFilter={subjectFilter} onSelectState={(abbr) => setStateFilter(abbr === stateFilter ? "" : abbr)} />
-      </div>
       <div className="mb-6">
-        <KidValueChart listings={listings} subjectFilter={subjectFilter} onSelectSubject={(s) => setSubjectFilter(s === subjectFilter ? "" : s)} />
+        <MapPanel listings={allListings} visible={listings} stateFilter={stateFilter} modelFilter={modelFilter} subjectFilter={subjectFilter} onSelectState={(abbr) => setStateFilter(abbr === stateFilter ? "" : abbr)} />
       </div>
 
       <div className="flex items-center justify-between mb-3">
@@ -214,7 +211,7 @@ export function BrowseView(props: {
             <X className="w-3.5 h-3.5" /> Clear filters
           </button>
         ) : (
-          <p className="text-sm text-slate-400">Click a state or a category to filter</p>
+          <p className="text-sm text-slate-400">Click a state to filter</p>
         )}
       </div>
 
