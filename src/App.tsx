@@ -82,7 +82,7 @@ export default function App() {
       if (workKindFilter && l.workKind !== workKindFilter) return false;
       if (moneyKindFilter && l.moneyKind !== moneyKindFilter) return false;
       return true;
-    });
+    }).sort((a, b) => b.amountSeeking - a.amountSeeking);
   }, [listings, query, stateFilter, modelFilter, subjectFilter, successFilter, trustFilters, proofFilters, cpkMin, cpkMax, workKindFilter, moneyKindFilter]);
 
   const selected = listings.find((l) => l.id === selectedId) ?? null;
@@ -259,7 +259,7 @@ export default function App() {
 
       <footer className="max-w-6xl mx-auto px-4 py-6 w-full text-sm text-[#2A3D55]">
         <button type="button" onClick={goPrivacy} className="hover:underline">Privacy</button>
-        <span className="mx-2">·</span>
+        <span className="mx-2">\u00b7</span>
         <button type="button" onClick={goTerms} className="hover:underline">Terms</button>
       </footer>
     </div>
