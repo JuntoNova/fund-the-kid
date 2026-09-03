@@ -100,40 +100,7 @@ export function KidValueChart({
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
       <p className="text-sm font-semibold text-slate-900">Filter by cost per child</p>
-      <p className="text-xs text-slate-500 mt-1 mb-3">
-        Each chip is the average dollars asked to serve one child in that category, cheapest first.
-        Tap a chip to show only those listings. Tap it again to clear.
-      </p>
-      {subjectFilter ? (
-        <p className="text-xs font-semibold text-sky-800 mb-3">Showing {subjectFilter} only.</p>
-      ) : null}
-      <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
-        <span>{formatCurrency(totalFunded)} already moving in this view</span>
-        <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
-      </div>
-      <div className="h-1.5 rounded-full bg-sky-100 overflow-hidden mb-3">
-        <div className="h-full bg-sky-600" style={{ width: `${fundedPct}%` }} />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {rows.map((r) => {
-          const active = subjectFilter === r.subject;
-          return (
-            <button
-              key={r.subject}
-              onClick={() => onSelectSubject(r.subject)}
-              className={`inline-flex items-baseline gap-1.5 rounded-full border px-3 py-1.5 text-left ${
-                active
-                  ? "border-sky-600 bg-sky-50 text-sky-900"
-                  : "border-slate-200 bg-white text-slate-800 hover:border-sky-300"
-              }`}
-            >
-              <span className="text-[13px] font-semibold">{r.subject}</span>
-              <span className="text-[13px] font-bold tabular-nums">{formatCurrency(r.cpk)}</span>
-            </button>
-          );
-        })}
-        {rows.length === 0 && <p className="text-sm text-slate-500">No listings.</p>}
-      </div>
+      <p className="text-xs text-slate-500 mt-1 mb-3">Unused.</p>
     </div>
   );
 }
@@ -210,6 +177,9 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
       <div className="mt-3 flex items-start justify-between gap-4">
         <div className="shrink-0">
           <div className="text-lg font-bold text-[#2A3D55]">{formatCurrency(listing.amountSeeking)}</div>
+          {listing.amountSeeking >= 1_000_000 ? (
+            <div className="text-[11px] font-bold text-[#2A3D55] mt-0.5">Principal raise</div>
+          ) : null}
           <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per child</div>
         </div>
         {listing.successMetric && (
