@@ -95,18 +95,20 @@ export function KidValueChart({
 
   const totalSeeking = listings.reduce((s, l) => s + l.amountSeeking, 0);
   const totalFunded = listings.reduce((s, l) => s + l.amountFunded, 0);
-  const totalKids = listings.reduce((s, l) => s + l.kidsServed, 0);
   const fundedPct = totalSeeking > 0 ? Math.round((totalFunded / totalSeeking) * 100) : 0;
-  const avg = totalKids > 0 ? Math.round(totalSeeking / totalKids) : 0;
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
-      <div className="flex items-baseline justify-between gap-3 mb-2">
-        <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
-        {avg > 0 && <p className="text-xs text-slate-500 tabular-nums">{formatCurrency(avg)} average</p>}
-      </div>
+      <p className="text-sm font-semibold text-slate-900">Filter by cost per child</p>
+      <p className="text-xs text-slate-500 mt-1 mb-3">
+        Each chip is the average dollars asked to serve one child in that category, cheapest first.
+        Tap a chip to show only those listings. Tap it again to clear.
+      </p>
+      {subjectFilter ? (
+        <p className="text-xs font-semibold text-sky-800 mb-3">Showing {subjectFilter} only.</p>
+      ) : null}
       <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
-        <span>{formatCurrency(totalFunded)} already moving</span>
+        <span>{formatCurrency(totalFunded)} already moving in this view</span>
         <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
       </div>
       <div className="h-1.5 rounded-full bg-sky-100 overflow-hidden mb-3">
