@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Listing } from "./data/listings";
 import { costPerKid, formatCurrency, formatHorizon, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/listings";
 import { TrustBadgeRow, ProofRows } from "./insights";
 import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
 
 export function DetailView({ listing, onBack }: { listing: Listing; onBack: () => void }) {
-  const [tab, setTab] = useState<"details" | "give">("details");
   const cpk = costPerKid(listing);
   const pct = Math.min(100, Math.round((listing.amountFunded / listing.amountSeeking) * 100));
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, [listing.id]);
+
   return (
     <div className="max-w-3xl">
       <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 mb-4">
@@ -18,64 +22,45 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       </div>
       <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{listing.title}</h1>
       {listing.organization && <p className="text-slate-600 mt-1">{listing.organization}</p>}
-      <div className="mt-4 mb-5 flex gap-1 border-b border-slate-200">
-        <button
-          type="button"
-          onClick={() => setTab("details")}
-          className={`px-4 py-2 text-sm font-bold border-b-2 -mb-px ${tab === "details" ? "border-[#4A94C8] text-[#2A3D55]" : "border-transparent text-slate-500"}`}
-        >
-          Details
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("give")}
-          className={`px-4 py-2 text-sm font-bold border-b-2 -mb-px ${tab === "give" ? "border-[#4A94C8] text-[#2A3D55]" : "border-transparent text-slate-500"}`}
-        >
-          Give
-        </button>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
+        <Metric label="Seeking" value={formatCurrency(listing.amountSeeking)} />
+        <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
+        <Metric label="Children" value={listing.kidsServed.toLocaleString()} />
+        <Metric label="Per child" value={formatCurrency(cpk)} />
       </div>
-      {tab === "give" ? (
-        <DetailDoors listing={listing} />
-      ) : (
-        <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
-            <Metric label="Seeking" value={formatCurrency(listing.amountSeeking)} />
-            <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
-            <Metric label="Children" value={listing.kidsServed.toLocaleString()} />
-            <Metric label="Per child" value={formatCurrency(cpk)} />
-          </div>
-          <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-6">
-            <div className="h-full bg-sky-600" style={{ width: `${pct}%` }} />
-          </div>
-          <p className="text-slate-700 leading-relaxed mb-4">{listing.description}</p>
-          <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
-            <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
-            <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
-            <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
-          </div>
-          {listing.successMetric && (
-            <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Success measure</p>
-              <p className="text-sm text-slate-700">{listing.successMetric}</p>
-            </div>
-          )}
-          <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
-            <p className="text-sm text-slate-700">
-              {formatCurrency(listing.amountSeeking)} serves {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{WORK_KIND_LABELS[listing.workKind]}</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{MONEY_KIND_LABELS[listing.moneyKind]}</span>
-            {listing.subjects.map((s) => (
-              <span key={s} className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 text-xs font-medium">{s}</span>
-            ))}
-          </div>
-          <ProofRows listing={listing} />
-        </>
+      <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-6">
+        <div className="h-full bg-sky-600" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="text-slate-700 leading-relaxed mb-4">{listing.description}</p>
+      <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
+        <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
+        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
+        <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
+      </div>
+      {listing.successMetric && (
+        <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Success measure</p>
+          <p className="text-sm text-slate-700">{listing.successMetric}</p>
+        </div>
       )}
+      <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
+        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
+        <p className="text-sm text-slate-700">
+          {formatCurrency(listing.amountSeeking)} serves {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
+        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{WORK_KIND_LABELS[listing.workKind]}</span>
+        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{MONEY_KIND_LABELS[listing.moneyKind]}</span>
+        {listing.subjects.map((s) => (
+          <span key={s} className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 text-xs font-medium">{s}</span>
+        ))}
+      </div>
+      <ProofRows listing={listing} />
+      <div className="mt-8">
+        <DetailDoors listing={listing} />
+      </div>
     </div>
   );
 }
