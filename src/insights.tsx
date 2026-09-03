@@ -88,58 +88,50 @@ export function KidValueChart({
   const rows = SUBJECTS.map((subject) => {
     const subset = listings.filter((l) => l.subjects.includes(subject));
     const seeking = subset.reduce((s, l) => s + l.amountSeeking, 0);
-    const funded = subset.reduce((s, l) => s + l.amountFunded, 0);
     const kids = subset.reduce((s, l) => s + l.kidsServed, 0);
     const cpk = kids > 0 ? Math.round(seeking / kids) : 0;
-    return { subject, seeking, funded, open: Math.max(0, seeking - funded), kids, cpk, count: subset.length };
-  }).filter((r) => r.count > 0);
+    return { subject, seeking, kids, cpk, count: subset.length };
+  }).filter((r) => r.count > 0).sort((a, b) => a.cpk - b.cpk);
 
-  const maxCpk = Math.max(1, ...rows.map((r) => r.cpk));
   const totalSeeking = listings.reduce((s, l) => s + l.amountSeeking, 0);
   const totalFunded = listings.reduce((s, l) => s + l.amountFunded, 0);
   const totalKids = listings.reduce((s, l) => s + l.kidsServed, 0);
   const fundedPct = totalSeeking > 0 ? Math.round((totalFunded / totalSeeking) * 100) : 0;
+  const avg = totalKids > 0 ? Math.round(totalSeeking / totalKids) : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col">
-      <div className="mb-3">
+    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+      <div className="flex items-baseline justify-between gap-3 mb-2">
         <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
-        <p className="text-xs text-slate-500">By category.</p>
+        {avg > 0 && <p className="text-xs text-slate-500 tabular-nums">{formatCurrency(avg)} average</p>}
       </div>
-      <div className="mb-4">
-        <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
-          <span>{formatCurrency(totalFunded)} already moving</span>
-          <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
-        </div>
-        <div className="h-2.5 rounded-full bg-sky-100 overflow-hidden flex">
-          <div className="h-full bg-sky-600" style={{ width: `${fundedPct}%` }} />
-        </div>
+      <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+        <span>{formatCurrency(totalFunded)} already moving</span>
+        <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
       </div>
-      <div className="flex-1 space-y-3">
+      <div className="h-1.5 rounded-full bg-sky-100 overflow-hidden mb-3">
+        <div className="h-full bg-sky-600" style={{ width: `${fundedPct}%` }} />
+      </div>
+      <div className="flex flex-wrap gap-2">
         {rows.map((r) => {
           const active = subjectFilter === r.subject;
           return (
-            <button key={r.subject} onClick={() => onSelectSubject(r.subject)} className={`w-full text-left ${active ? "opacity-100" : "hover:opacity-90"}`}>
-              <div className="flex items-baseline justify-between gap-2 mb-1">
-                <span className={`text-xs font-semibold ${active ? "text-sky-800" : "text-slate-800"}`}>{r.subject}</span>
-                <span className="text-xs font-bold text-slate-900 tabular-nums">{formatCurrency(r.cpk)} per child</span>
-              </div>
-              <div className="h-7 rounded-md bg-slate-100 overflow-hidden relative">
-                <div className={`h-full rounded-md ${active ? "bg-sky-600" : "bg-sky-400"}`} style={{ width: `${Math.max(8, (r.cpk / maxCpk) * 100)}%` }} />
-              </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {r.kids.toLocaleString()} children · {r.count} opportunit{r.count === 1 ? "y" : "ies"}
-              </p>
+            <button
+              key={r.subject}
+              onClick={() => onSelectSubject(r.subject)}
+              className={`inline-flex items-baseline gap-1.5 rounded-full border px-3 py-1.5 text-left ${
+                active
+                  ? "border-sky-600 bg-sky-50 text-sky-900"
+                  : "border-slate-200 bg-white text-slate-800 hover:border-sky-300"
+              }`}
+            >
+              <span className="text-[13px] font-semibold">{r.subject}</span>
+              <span className="text-[13px] font-bold tabular-nums">{formatCurrency(r.cpk)}</span>
             </button>
           );
         })}
-        {rows.length === 0 && <p className="text-sm text-slate-500 py-8 text-center">No listings.</p>}
+        {rows.length === 0 && <p className="text-sm text-slate-500">No listings.</p>}
       </div>
-      {totalKids > 0 && (
-        <p className="text-xs text-slate-500 mt-3">
-          {formatCurrency(Math.round(totalSeeking / totalKids))} average per child in this view.
-        </p>
-      )}
     </div>
   );
 }
@@ -196,7 +188,7 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
   const cpk = costPerKid(listing);
   const orgLine = [listing.organization, listing.state, `${listing.kidsServed.toLocaleString()} children`]
     .filter(Boolean)
-    .join(" · ");
+    .join(" \u00b7 ");
   return (
     <div
       role="button"
