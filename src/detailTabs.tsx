@@ -69,9 +69,9 @@ function DetailDoors({ listing }: { listing: Listing }) {
   const money = listing.moneyKind ?? "gift";
   const showGive = money === "gift" || money === "either";
   return (
-    <div className={`grid gap-4 ${showGive ? "sm:grid-cols-2" : ""}`}>
-      {showGive ? <GiveNowDoor /> : null}
+    <div className="space-y-4">
       <TalkDoor defaultKind={money === "ownership" ? "ownership" : "gift"} />
+      {showGive ? <GiveNowDoor /> : null}
     </div>
   );
 }
@@ -82,11 +82,10 @@ function GiveNowDoor() {
   const presets = [25, 50, 100, 250];
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-sm font-semibold text-slate-900">Give now</p>
-      <p className="text-sm text-slate-600 mt-1">Small gifts. Pick an amount.</p>
-      <p className="text-sm text-slate-600 mt-1">Example listing. No charge on this site yet.</p>
+      <p className="text-sm font-semibold text-slate-900">Small gift</p>
+      <p className="text-sm text-slate-600 mt-1">For a card gift under $1,000. Not the path for a foundation or a DAF.</p>
       {done ? (
-        <p className="text-sm font-medium text-sky-800 mt-3">Example listing. No charge on this site yet.</p>
+        <p className="text-sm font-medium text-sky-800 mt-3">Recorded on this demo. No charge yet.</p>
       ) : (
         <form
           className="mt-3 space-y-3"
@@ -116,8 +115,8 @@ function GiveNowDoor() {
               inputMode="numeric"
             />
           </label>
-          <button type="submit" className="w-full py-2.5 rounded-lg bg-sky-600 text-white text-sm font-medium hover:bg-sky-700">
-            Give now
+          <button type="submit" className="w-full py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-sm font-medium hover:bg-slate-50">
+            Record a small gift
           </button>
         </form>
       )}
@@ -128,16 +127,21 @@ function GiveNowDoor() {
 function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [org, setOrg] = useState("");
   const [range, setRange] = useState("");
   const [kind, setKind] = useState<"gift" | "ownership">(defaultKind);
   const [move, setMove] = useState("");
   const [done, setDone] = useState(false);
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-sm font-semibold text-slate-900">Talk / wire / grant</p>
-      <p className="text-sm text-slate-600 mt-1">{defaultKind === "ownership" ? "Ownership talk. Wire or a call. This is not a small gift." : "Bigger gifts. Wire, grant paper, or a call."}</p>
+      <p className="text-sm font-semibold text-slate-900">Wire, grant, DAF, or ownership</p>
+      <p className="text-sm text-slate-600 mt-1">
+        {defaultKind === "ownership"
+          ? "This listing is asking for ownership capital. A program officer can follow up on a call or with documents."
+          : "This is the path for a principal gift. Foundation, DAF, wire, or grant paper."}
+      </p>
       {done ? (
-        <p className="text-sm font-medium text-sky-800 mt-3">Thanks. This is a mock. Nobody is notified yet.</p>
+        <p className="text-sm font-medium text-sky-800 mt-3">Request recorded on this demo. No one is notified yet.</p>
       ) : (
         <form
           className="mt-3 space-y-3"
@@ -151,37 +155,44 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
             <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
           </label>
           <label className="block">
-            <span className="block text-xs font-medium text-slate-500 mb-1">Email</span>
+            <span className="block text-xs font-medium text-slate-500 mb-1">Work email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
+          </label>
+          <label className="block">
+            <span className="block text-xs font-medium text-slate-500 mb-1">Foundation, DAF, or firm</span>
+            <input value={org} onChange={(e) => setOrg(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3" />
           </label>
           <label className="block">
             <span className="block text-xs font-medium text-slate-500 mb-1">Amount range</span>
             <select value={range} onChange={(e) => setRange(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3 bg-white">
               <option value="">Choose a range</option>
-              <option value="under-10k">Under $10k</option>
-              <option value="10-50k">$10k to $50k</option>
-              <option value="50-250k">$50k to $250k</option>
-              <option value="250k-up">$250k and up</option>
+              <option value="under-250k">Under $250k</option>
+              <option value="250k-1m">$250k to $1M</option>
+              <option value="1-5m">$1M to $5M</option>
+              <option value="5m-up">$5M and up</option>
             </select>
           </label>
           <label className="block">
-            <span className="block text-xs font-medium text-slate-500 mb-1">Gift or Ownership</span>
+            <span className="block text-xs font-medium text-slate-500 mb-1">Gift or ownership</span>
             <select value={kind} onChange={(e) => setKind(e.target.value as "gift" | "ownership")} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3 bg-white">
               <option value="gift">Gift</option>
               <option value="ownership">Ownership</option>
             </select>
           </label>
           <label className="block">
-            <span className="block text-xs font-medium text-slate-500 mb-1">How to move money</span>
+            <span className="block text-xs font-medium text-slate-500 mb-1">How the money would move</span>
             <select value={move} onChange={(e) => setMove(e.target.value)} className="w-full rounded-md border border-slate-200 text-sm py-2 px-3 bg-white">
               <option value="">Choose a path</option>
               <option value="wire">Wire</option>
               <option value="grant">Grant paper</option>
-              <option value="call">Call</option>
+              <option value="daf">Donor-advised fund</option>
+              <option value="foundation">Foundation grant</option>
+              <option value="ownership-docs">Ownership documents</option>
+              <option value="call">Call with a program officer</option>
             </select>
           </label>
           <button type="submit" className="w-full py-2.5 rounded-lg bg-[#4A94C8] text-white text-sm font-medium hover:bg-[#3d86b8]">
-            Send
+            Request a follow-up
           </button>
         </form>
       )}
