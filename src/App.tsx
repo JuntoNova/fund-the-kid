@@ -12,7 +12,8 @@ import {
 } from "./data/listings";
 import type { Listing } from "./data/listings";
 import { BrowseView } from "./browse";
-import { DetailView, ListForm } from "./forms";
+import { ListForm } from "./forms";
+import { DetailView } from "./detailTabs";
 import { PrivacyView, TermsView, AboutView } from "./legal";
 import { parseAsk } from "./filterAsk";
 import { Menu } from "lucide-react";
