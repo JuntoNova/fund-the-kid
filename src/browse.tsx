@@ -183,7 +183,7 @@ export function BrowseView(props: {
                 />
               ))}
               <Chip
-                label="Claim only · no file"
+                label="Claim only \u00b7 no file"
                 warn
                 on={proofFilters.includes("claim_only")}
                 onClick={() => setProofFilters(toggleId(proofFilters, "claim_only"))}
@@ -200,8 +200,10 @@ export function BrowseView(props: {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+      <div className="mb-4">
         <MapPanel listings={allListings} visible={listings} stateFilter={stateFilter} modelFilter={modelFilter} subjectFilter={subjectFilter} onSelectState={(abbr) => setStateFilter(abbr === stateFilter ? "" : abbr)} />
+      </div>
+      <div className="mb-6">
         <KidValueChart listings={listings} subjectFilter={subjectFilter} onSelectSubject={(s) => setSubjectFilter(s === subjectFilter ? "" : s)} />
       </div>
 
@@ -266,7 +268,7 @@ function MapPanel({
         </div>
         {stateFilter && <button onClick={() => onSelectState(stateFilter)} className="text-xs font-medium text-sky-700 hover:text-sky-800">Back to U.S.</button>}
       </div>
-      <div className="h-[280px] sm:h-[320px]">
+      <div className="h-[340px] sm:h-[400px] lg:h-[440px]">
         <ComposableMap projection="geoAlbersUsa" projectionConfig={{ scale: 800 }} width={800} height={500} style={{ width: "100%", height: "100%" }}>
           <ZoomableGroup center={center} zoom={zoom} translateExtent={[[-200, -100], [1000, 700]]}>
             <Geographies geography={GEO_URL}>
