@@ -18,7 +18,7 @@ export function PrivacyView({ onBack }: PageProps) {
   return (
     <LegalShell title="Privacy" onBack={onBack}>
       <p>
-        Fund the Kid shows example listings so donors can browse education projects. Listings are mock. This site does
+        Fund the Kid shows example listings so donors can browse programs that help kids learn. Listings are mock. This site does
         not collect accounts or take payment. Search and filters run in the browser. If you use the filter helper, the
         question you type stays in the browser so filters can be set. We do not sell that text. Credentials and proof
         files on listings are examples, not real Candid, BBB, or IRS records.
@@ -42,11 +42,11 @@ export function TermsView({ onBack }: PageProps) {
 export function AboutView({ onBack }: PageProps) {
   return (
     <LegalShell title="About" onBack={onBack}>
-      <p>Fund the Kid is a place to invest in education. Anyone doing work that helps kids learn can list. You decide what to fund.</p>
+      <p>Fund the Kid is a place to fund work that helps kids learn. Anyone doing that work can list. You decide what to support.</p>
       <p>
         The site does not pick winners. That is the point. A foundation already has a staff and a rolodex. This is for
         seeing work those rooms often never see: microschools, tutoring, therapy, tuition, for-profit operators, and
-        public programs on the same page, with cost per child in the open.
+        public programs on the same page, with what it costs to reach a student, in the open.
       </p>
       <p>
         Open listing is not the same as an open checkbook. Filters keep only what a program officer will look at:
@@ -56,7 +56,7 @@ export function AboutView({ onBack }: PageProps) {
         Money moves the way that class of donor already moves it. Wire. Grant paper. Donor-advised fund. Foundation
         grant. Ownership documents. A call. The small-gift button is not the product.
       </p>
-      <p>Listings on this site today are examples, so the product can be tested before live capital sits on it.</p>
+      <p>Listings on this site today are examples, so the product can be tested before live gifts sit on it.</p>
     </LegalShell>
   );
 }
