@@ -91,16 +91,51 @@ export function KidValueChart({
     const kids = subset.reduce((s, l) => s + l.kidsServed, 0);
     const cpk = kids > 0 ? Math.round(seeking / kids) : 0;
     return { subject, seeking, kids, cpk, count: subset.length };
-  }).filter((r) => r.count > 0).sort((a, b) => a.cpk - b.cpk);
+  }).filter((r) => r.count > 0).sort((a, b) => b.cpk - a.cpk);
 
+  const maxCpk = Math.max(1, ...rows.map((r) => r.cpk));
   const totalSeeking = listings.reduce((s, l) => s + l.amountSeeking, 0);
   const totalFunded = listings.reduce((s, l) => s + l.amountFunded, 0);
+  const totalKids = listings.reduce((s, l) => s + l.kidsServed, 0);
   const fundedPct = totalSeeking > 0 ? Math.round((totalFunded / totalSeeking) * 100) : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
-      <p className="text-sm font-semibold text-slate-900">Filter by cost per child</p>
-      <p className="text-xs text-slate-500 mt-1 mb-3">Unused.</p>
+    <div className="bg-white rounded-xl border border-[#e4ddd2] p-4 h-full flex flex-col">
+      <div className="mb-3">
+        <p className="text-sm font-extrabold text-[#2A3D55]">What a child costs</p>
+        <p className="text-xs text-[#6b7786] mt-0.5">Cost per child by category. Click to filter.</p>
+      </div>
+      <div className="mb-4">
+        <div className="flex items-center justify-between text-[11px] text-[#6b7786] mb-1">
+          <span>{formatCurrency(totalFunded)} already moving</span>
+          <span>{formatCurrency(Math.max(0, totalSeeking - totalFunded))} still open</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-[#e8f4fb] overflow-hidden">
+          <div className="h-full bg-[#4A94C8]" style={{ width: `${fundedPct}%` }} />
+        </div>
+      </div>
+      <div className="flex-1 space-y-2.5">
+        {rows.slice(0, 6).map((r) => {
+          const active = subjectFilter === r.subject;
+          return (
+            <button key={r.subject} onClick={() => onSelectSubject(r.subject)} className="w-full text-left">
+              <div className="flex items-baseline justify-between gap-2 mb-1">
+                <span className={`text-[12px] font-bold ${active ? "text-[#4A94C8]" : "text-[#2A3D55]"}`}>{r.subject}</span>
+                <span className="num text-[12px] font-extrabold text-[#2A3D55]">{formatCurrency(r.cpk)}</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-[#f6f1e8] overflow-hidden">
+                <div className={`h-full rounded-full ${active ? "bg-[#4A94C8]" : "bg-[#8EC4E4]"}`} style={{ width: `${Math.max(8, (r.cpk / maxCpk) * 100)}%` }} />
+              </div>
+            </button>
+          );
+        })}
+        {rows.length === 0 && <p className="text-sm text-[#6b7786] py-8 text-center">No listings in this view yet.</p>}
+      </div>
+      {totalKids > 0 && (
+        <p className="text-[12px] text-[#6b7786] mt-3 pt-3 border-t border-[#f0e9de]">
+          {formatCurrency(Math.round(totalSeeking / totalKids))} average per child in this view.
+        </p>
+      )}
     </div>
   );
 }
@@ -132,7 +167,7 @@ export function CostPerKidSlider({
   }
   const hiLabel = hi >= 10000 ? "$10k+" : formatCurrency(hi);
   return (
-    <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white">
+    <div className="mb-4 p-4 rounded-xl border border-[#e4ddd2] bg-white">
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
         <p className="text-sm font-semibold text-slate-900 tabular-nums">
@@ -155,9 +190,9 @@ export function CostPerKidSlider({
 
 export function ListingCard({ listing, onClick }: { listing: Listing; onClick: () => void }) {
   const cpk = costPerKid(listing);
-  const orgLine = [listing.organization, listing.state, `${listing.kidsServed.toLocaleString()} children`]
+  const orgLine = [listing.organization, listing.metro, listing.state]
     .filter(Boolean)
-    .join(" \u00b7 ");
+    .join(" · ");
   return (
     <div
       role="button"
@@ -169,22 +204,39 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
           onClick();
         }
       }}
-      className="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-sky-300 hover:shadow-sm transition-all cursor-pointer"
+      className="w-full text-left rounded-xl border border-[#e4ddd2] bg-white hover:border-[#8EC4E4] hover:shadow-[0_8px_24px_rgba(42,61,85,0.06)] transition-all cursor-pointer overflow-hidden"
     >
-      <TrustBadgeRow listing={listing} compact />
-      <h3 className="font-semibold text-[#2A3D55] text-[15px] leading-snug mt-2.5">{listing.title}</h3>
-      <p className="text-sm text-slate-500 mt-0.5">{orgLine}</p>
-      <div className="mt-3 flex items-start justify-between gap-4">
-        <div className="shrink-0">
-          <div className="text-lg font-bold text-[#2A3D55]">{formatCurrency(listing.amountSeeking)}</div>
-          {listing.amountSeeking >= 1_000_000 ? (
-            <div className="text-[11px] font-bold text-[#2A3D55] mt-0.5">Principal raise</div>
-          ) : null}
-          <div className="text-xs text-slate-500 mt-0.5">{formatCurrency(cpk)} per child</div>
+      <div className="flex">
+        <div className="hidden sm:block w-1.5 bg-[#8EC4E4] shrink-0" />
+        <div className="flex-1 p-4 sm:p-5">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <TrustBadgeRow listing={listing} compact />
+              <h3 className="font-extrabold text-[#2A3D55] text-[16px] leading-snug mt-2.5">{listing.title}</h3>
+              <p className="text-[13px] text-[#6b7786] mt-1">{orgLine}</p>
+              {listing.successMetric && (
+                <p className="mt-2 text-[13px] text-[#3d4d5f] leading-snug line-clamp-2">{listing.successMetric}</p>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-3 sm:min-w-[280px] lg:text-right">
+              <div>
+                <p className="label">Ask</p>
+                <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{formatCurrency(listing.amountSeeking)}</p>
+                {listing.amountSeeking >= 1_000_000 ? (
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#4A94C8] mt-0.5">Principal</p>
+                ) : null}
+              </div>
+              <div>
+                <p className="label">Per child</p>
+                <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{formatCurrency(cpk)}</p>
+              </div>
+              <div>
+                <p className="label">Children</p>
+                <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{listing.kidsServed.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        {listing.successMetric && (
-          <p className="flex-1 text-sm text-slate-600 leading-snug text-right pt-0.5">{listing.successMetric}</p>
-        )}
       </div>
     </div>
   );
