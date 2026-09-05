@@ -14,24 +14,26 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
 
   return (
     <div className="max-w-3xl">
-      <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 mb-4">
-        <ArrowLeft className="w-4 h-4" /> Back
+      <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-[#6b7786] hover:text-[#2A3D55] mb-4">
+        <ArrowLeft className="w-4 h-4" /> Back to marketplace
       </button>
+      <div className="rounded-xl border border-[#e4ddd2] bg-white overflow-hidden">
+      <div className="p-5 sm:p-7">
       <div className="mb-3">
         <TrustBadgeRow listing={listing} />
       </div>
-      <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{listing.title}</h1>
-      {listing.organization && <p className="text-slate-600 mt-1">{listing.organization}</p>}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5">
+      <h1 className="text-[26px] sm:text-[30px] font-extrabold text-[#2A3D55] tracking-tight leading-tight">{listing.title}</h1>
+      {listing.organization && <p className="text-[#3d4d5f] mt-1.5">{listing.organization}</p>}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#e4ddd2] border border-[#e4ddd2] rounded-xl overflow-hidden my-5">
         <Metric label="Seeking" value={formatCurrency(listing.amountSeeking)} />
         <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
         <Metric label="Children" value={listing.kidsServed.toLocaleString()} />
         <Metric label="Per child" value={formatCurrency(cpk)} />
       </div>
-      <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-6">
-        <div className="h-full bg-sky-600" style={{ width: `${pct}%` }} />
+      <div className="h-1.5 rounded-full bg-[#e8f4fb] overflow-hidden mb-6">
+        <div className="h-full bg-[#4A94C8]" style={{ width: `${pct}%` }} />
       </div>
-      <p className="text-slate-700 leading-relaxed mb-4">{listing.description}</p>
+      <p className="text-[#3d4d5f] leading-relaxed mb-4">{listing.description}</p>
       <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
         <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
         <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
@@ -58,7 +60,9 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
         ))}
       </div>
       <ProofRows listing={listing} />
-      <div className="mt-8">
+      </div>
+      </div>
+      <div className="mt-6">
         <DetailDoors listing={listing} />
       </div>
     </div>
@@ -81,7 +85,7 @@ function GiveNowDoor() {
   const [done, setDone] = useState(false);
   const presets = [25, 50, 100, 250];
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-[#e4ddd2] bg-white p-5">
       <p className="text-sm font-semibold text-slate-900">Small gift</p>
       <p className="text-sm text-slate-600 mt-1">For a card gift under $1,000. Not the path for a foundation or a DAF.</p>
       {done ? (
@@ -133,7 +137,7 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
   const [move, setMove] = useState("");
   const [done, setDone] = useState(false);
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-[#e4ddd2] bg-white p-5">
       <p className="text-sm font-semibold text-slate-900">Wire, grant, DAF, or ownership</p>
       <p className="text-sm text-slate-600 mt-1">
         {defaultKind === "ownership"
@@ -202,9 +206,9 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <p className="text-[11px] uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="text-lg font-semibold text-slate-900 mt-0.5">{value}</p>
+    <div className="bg-white p-3 sm:p-4">
+      <p className="label">{label}</p>
+      <p className="num text-lg font-extrabold text-[#2A3D55] mt-1">{value}</p>
     </div>
   );
 }
