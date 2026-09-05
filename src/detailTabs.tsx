@@ -15,7 +15,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
   return (
     <div className="max-w-3xl">
       <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-[#6b7786] hover:text-[#2A3D55] mb-4">
-        <ArrowLeft className="w-4 h-4" /> Back to marketplace
+        <ArrowLeft className="w-4 h-4" /> Back to browse
       </button>
       <div className="rounded-xl border border-[#e4ddd2] bg-white overflow-hidden">
       <div className="p-5 sm:p-7">
@@ -25,10 +25,10 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <h1 className="text-[26px] sm:text-[30px] font-extrabold text-[#2A3D55] tracking-tight leading-tight">{listing.title}</h1>
       {listing.organization && <p className="text-[#3d4d5f] mt-1.5">{listing.organization}</p>}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#e4ddd2] border border-[#e4ddd2] rounded-xl overflow-hidden my-5">
-        <Metric label="Seeking" value={formatCurrency(listing.amountSeeking)} />
+        <Metric label="Needed" value={formatCurrency(listing.amountSeeking)} />
         <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
-        <Metric label="Children" value={listing.kidsServed.toLocaleString()} />
-        <Metric label="Per child" value={formatCurrency(cpk)} />
+        <Metric label="Students" value={listing.kidsServed.toLocaleString()} />
+        <Metric label="Per student" value={formatCurrency(cpk)} />
       </div>
       <div className="h-1.5 rounded-full bg-[#e8f4fb] overflow-hidden mb-6">
         <div className="h-full bg-[#4A94C8]" style={{ width: `${pct}%` }} />
@@ -36,7 +36,7 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
       <p className="text-[#3d4d5f] leading-relaxed mb-4">{listing.description}</p>
       <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
         <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
-        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} children · {formatHorizon(listing)}</span>
+        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} students · {formatHorizon(listing)}</span>
         <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
       </div>
       {listing.successMetric && (
@@ -46,9 +46,9 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
         </div>
       )}
       <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
-        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Unit cost</p>
+        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">To reach one student</p>
         <p className="text-sm text-slate-700">
-          {formatCurrency(listing.amountSeeking)} serves {listing.kidsServed.toLocaleString()} children over {formatHorizon(listing)} ({formatCurrency(cpk)} per child).
+          {formatCurrency(listing.amountSeeking)} reaches {listing.kidsServed.toLocaleString()} students over {formatHorizon(listing)} ({formatCurrency(cpk)} per student).
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -141,8 +141,8 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
       <p className="text-sm font-semibold text-slate-900">Wire, grant, DAF, or ownership</p>
       <p className="text-sm text-slate-600 mt-1">
         {defaultKind === "ownership"
-          ? "This listing is asking for ownership capital. A program officer can follow up on a call or with documents."
-          : "This is the path for a principal gift. Foundation, DAF, wire, or grant paper."}
+          ? "This listing is asking for an ownership stake. A program officer can follow up on a call or with documents."
+          : "This is the path for a large gift. Foundation, DAF, wire, or grant paper."}
       </p>
       {done ? (
         <p className="text-sm font-medium text-sky-800 mt-3">Request recorded on this demo. No one is notified yet.</p>

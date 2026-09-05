@@ -191,7 +191,7 @@ export default function App() {
               Fund the Kid
             </span>
             <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-[0.16em] text-[#6b7786]">
-              Education capital
+              Help kids learn
             </span>
           </button>
           <nav className="hidden md:flex items-center gap-1">
@@ -202,7 +202,7 @@ export default function App() {
               onClick={goList}
               className="ml-2 inline-flex items-center px-3.5 py-2 rounded-md bg-[#4A94C8] text-white text-[13px] font-bold hover:bg-[#3d86b8]"
             >
-              List an opportunity
+              List a program
             </button>
           </nav>
           <div className="relative shrink-0 md:hidden">
@@ -229,7 +229,7 @@ export default function App() {
                   role="menu"
                 >
                   {menuItem("Browse", view === "browse" || view === "detail", goBrowse)}
-                  {menuItem("List opportunity", view === "list", goList)}
+                  {menuItem("List a program", view === "list", goList)}
                   {menuItem("About", view === "about", goAbout)}
                 </div>
               </>
@@ -285,7 +285,7 @@ export default function App() {
 
       <footer className="border-t border-[#e4ddd2] mt-8">
         <div className="max-w-6xl mx-auto px-4 py-6 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[13px] text-[#6b7786]">
-          <p>An open marketplace for education capital. Listings today are examples.</p>
+          <p>A place to fund work that helps kids learn. Listings today are examples.</p>
           <div className="flex items-center gap-3">
             <button type="button" onClick={goAbout} className="hover:text-[#2A3D55]">About</button>
             <span aria-hidden="true">·</span>

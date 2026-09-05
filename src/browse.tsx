@@ -101,12 +101,12 @@ export function BrowseView(props: {
   return (
     <div>
       <div className="mb-5">
-        <p className="label mb-1">Marketplace</p>
+        <p className="label mb-1">Browse</p>
         <h1 className="text-[26px] sm:text-[30px] font-extrabold tracking-tight text-[#2A3D55]">
-          Education projects seeking capital
+          Programs looking for support
         </h1>
         <p className="mt-1.5 text-[15px] text-[#3d4d5f] max-w-2xl leading-relaxed">
-          Filter by place, cost per child, proof, and kind of money. Every model on the same page.
+          Filter by place, how far a dollar goes, proof, and how the money is given. Every kind of program on the same page.
         </p>
       </div>
 
@@ -222,7 +222,7 @@ export function BrowseView(props: {
       </div>
 
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm text-slate-500">{listings.length} opportunit{listings.length === 1 ? "y" : "ies"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
+        <p className="text-sm text-slate-500">{listings.length} program{listings.length === 1 ? "" : "s"}{stateFilter ? ` in ${ABBR_TO_NAME[stateFilter] ?? stateFilter}` : ""}</p>
         {activeFilters > 0 ? (
           <button onClick={() => { setStateFilter(""); setModelFilter(""); setSubjectFilter(""); setSuccessFilter(""); setTrustFilters([]); setProofFilters([]); setCpkMin(null); setCpkMax(null); setWorkKindFilter(""); setMoneyKindFilter(""); }} className="text-sm text-sky-700 hover:text-sky-800 font-medium inline-flex items-center gap-1">
             <X className="w-3.5 h-3.5" /> Clear filters
@@ -246,9 +246,9 @@ function MarketStrip({ listings, visible }: { listings: Listing[]; visible: List
   const avg = kids > 0 ? Math.round(seeking / kids) : 0;
   const cells = [
     { label: "Open listings", value: String(visible.length) },
-    { label: "Capital seeking", value: formatCurrency(seeking) },
-    { label: "Children in view", value: kids.toLocaleString() },
-    { label: "Avg. per child", value: formatCurrency(avg) },
+    { label: "Still needed", value: formatCurrency(seeking) },
+    { label: "Students reached", value: kids.toLocaleString() },
+    { label: "To reach one student", value: formatCurrency(avg) },
   ];
   return (
     <div className="mb-5 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-xl overflow-hidden border border-[#e4ddd2] bg-[#e4ddd2]">
@@ -299,7 +299,7 @@ function MapPanel({
     <div className="bg-white rounded-xl border border-[#e4ddd2] overflow-hidden relative h-full">
       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-slate-900">Where the opportunities are</p>
+          <p className="text-sm font-semibold text-slate-900">Where the work is</p>
           <p className="text-xs text-slate-500">Select a state to filter.</p>
         </div>
         {stateFilter && <button onClick={() => onSelectState(stateFilter)} className="text-xs font-medium text-sky-700 hover:text-sky-800">Back to U.S.</button>}
