@@ -1,18 +1,60 @@
 @import "tailwindcss";
 
+:root {
+  --cream: #f6f1e8;
+  --cream-2: #efe8db;
+  --ink: #2a3d55;
+  --ink-soft: #3d4d5f;
+  --muted: #6b7786;
+  --sky: #8ec4e4;
+  --sky-deep: #4a94c8;
+  --sky-wash: #e8f4fb;
+  --blush: #f3c6d4;
+  --sage: #c5dcce;
+  --card: #ffffff;
+  --line: #e4ddd2;
+  --line-strong: #d4cbbd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Nunito, ui-rounded, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #F6F1E8;
-  color: #2A3D55;
+  background: var(--cream);
+  color: var(--ink);
 }
 
-.font-logo, .font-display {
+.font-logo,
+.font-display {
   font-family: "Great Vibes", cursive;
   font-weight: 400;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: Nunito, ui-rounded, system-ui, sans-serif;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.surface {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
 }
