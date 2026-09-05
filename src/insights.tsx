@@ -102,8 +102,8 @@ export function KidValueChart({
   return (
     <div className="bg-white rounded-xl border border-[#e4ddd2] p-4 h-full flex flex-col">
       <div className="mb-3">
-        <p className="text-sm font-extrabold text-[#2A3D55]">What a child costs</p>
-        <p className="text-xs text-[#6b7786] mt-0.5">Cost per child by category. Click to filter.</p>
+        <p className="text-sm font-extrabold text-[#2A3D55]">What it takes to reach one student</p>
+        <p className="text-xs text-[#6b7786] mt-0.5">By kind of work. Click to filter.</p>
       </div>
       <div className="mb-4">
         <div className="flex items-center justify-between text-[11px] text-[#6b7786] mb-1">
@@ -133,7 +133,7 @@ export function KidValueChart({
       </div>
       {totalKids > 0 && (
         <p className="text-[12px] text-[#6b7786] mt-3 pt-3 border-t border-[#f0e9de]">
-          {formatCurrency(Math.round(totalSeeking / totalKids))} average per child in this view.
+          {formatCurrency(Math.round(totalSeeking / totalKids))} to reach one student in this view.
         </p>
       )}
     </div>
@@ -169,7 +169,7 @@ export function CostPerKidSlider({
   return (
     <div className="mb-4 p-4 rounded-xl border border-[#e4ddd2] bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-semibold text-slate-900">Cost to serve each child</p>
+        <p className="text-sm font-semibold text-slate-900">Funding needed per student</p>
         <p className="text-sm font-semibold text-slate-900 tabular-nums">
           {formatCurrency(lo)} to {hiLabel}
         </p>
@@ -223,15 +223,15 @@ export function ListingCard({ listing, onClick }: { listing: Listing; onClick: (
                 <p className="label">Ask</p>
                 <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{formatCurrency(listing.amountSeeking)}</p>
                 {listing.amountSeeking >= 1_000_000 ? (
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#4A94C8] mt-0.5">Principal</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[#4A94C8] mt-0.5">Large raise</p>
                 ) : null}
               </div>
               <div>
-                <p className="label">Per child</p>
+                <p className="label">Per student</p>
                 <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{formatCurrency(cpk)}</p>
               </div>
               <div>
-                <p className="label">Children</p>
+                <p className="label">Students</p>
                 <p className="num text-[17px] font-extrabold text-[#2A3D55] mt-0.5">{listing.kidsServed.toLocaleString()}</p>
               </div>
             </div>
