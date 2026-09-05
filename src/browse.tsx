@@ -10,9 +10,9 @@ import { formatCurrency } from "./data/listings";
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 const TRUST_CHIPS: { id: string; label: string }[] = [
-  { id: "verified", label: "Verified entity" },
-  { id: "nonprofit", label: "501(c)(3)" },
-  { id: "for_profit_filed", label: "For-profit, state filed" },
+  { id: "verified", label: "Verified group" },
+  { id: "nonprofit", label: "Nonprofit" },
+  { id: "for_profit_filed", label: "For-profit" },
   { id: "third_party_seal", label: "Has third-party seal" },
 ];
 
@@ -202,7 +202,7 @@ export function BrowseView(props: {
               />
             </div>
             <p className="text-xs text-[#7a8794] mt-3">
-              Charity seals only on nonprofits. For-profits get state filing, EIN, and optional BBB Business. A claim without a file still lists. Donors who care filter it out.
+              Seals sit on the program page. A claim without a file still lists. People who care can filter it out.
             </p>
           </div>
 
