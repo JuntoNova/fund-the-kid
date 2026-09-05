@@ -4,7 +4,8 @@ import { SUCCESS_MEASURES, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/li
 import { NAME_TO_ABBR, ABBR_TO_NAME, STATE_CENTERS } from "./data/states";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { Search, Filter, X } from "lucide-react";
-import { CostPerKidSlider, ListingCard, SUBJECTS } from "./insights";
+import { CostPerKidSlider, KidValueChart, ListingCard, SUBJECTS } from "./insights";
+import { formatCurrency } from "./data/listings";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -51,7 +52,6 @@ function Chip({
 function toggleId(list: string[], id: string): string[] {
   return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
 }
-
 
 export function BrowseView(props: {
   listings: Listing[];
@@ -100,19 +100,31 @@ export function BrowseView(props: {
 
   return (
     <div>
+      <div className="mb-5">
+        <p className="label mb-1">Marketplace</p>
+        <h1 className="text-[26px] sm:text-[30px] font-extrabold tracking-tight text-[#2A3D55]">
+          Education projects seeking capital
+        </h1>
+        <p className="mt-1.5 text-[15px] text-[#3d4d5f] max-w-2xl leading-relaxed">
+          Filter by place, cost per child, proof, and kind of money. Every model on the same page.
+        </p>
+      </div>
+
+      <MarketStrip listings={allListings} visible={listings} />
+
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search title, place, organization." className="w-full pl-10 pr-3 py-2.5 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a94a0]" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search title, place, organization." className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#e4ddd2] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#4A94C8]/25 focus:border-[#4A94C8]" />
         </div>
-        <button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-[#e8f4fb] text-[#2A3D55] text-sm font-bold hover:bg-[#d9eef8]">
+        <button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[#e4ddd2] bg-white text-[#2A3D55] text-sm font-bold hover:bg-[#f6f1e8]">
           <Filter className="w-4 h-4" /> Filters
           {activeFilters > 0 && <span className="ml-1 w-5 h-5 rounded-full bg-[#4A94C8] text-white text-xs flex items-center justify-center">{activeFilters}</span>}
         </button>
       </div>
 
       {showFilters && (
-        <div className="mb-4 p-4 rounded-xl border border-slate-200 bg-white">
+        <div className="mb-4 p-4 rounded-xl border border-[#e4ddd2] bg-white">
           <AskPanel onAsk={onAsk} />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
@@ -183,7 +195,7 @@ export function BrowseView(props: {
                 />
               ))}
               <Chip
-                label="Claim only \u00b7 no file"
+                label="Claim only · no file"
                 warn
                 on={proofFilters.includes("claim_only")}
                 onClick={() => setProofFilters(toggleId(proofFilters, "claim_only"))}
@@ -200,8 +212,13 @@ export function BrowseView(props: {
         </div>
       )}
 
-      <div className="mb-6">
-        <MapPanel listings={allListings} visible={listings} stateFilter={stateFilter} modelFilter={modelFilter} subjectFilter={subjectFilter} onSelectState={(abbr) => setStateFilter(abbr === stateFilter ? "" : abbr)} />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+        <div className="lg:col-span-3">
+          <MapPanel listings={allListings} visible={listings} stateFilter={stateFilter} modelFilter={modelFilter} subjectFilter={subjectFilter} onSelectState={(abbr) => setStateFilter(abbr === stateFilter ? "" : abbr)} />
+        </div>
+        <div className="lg:col-span-2">
+          <KidValueChart listings={listings} subjectFilter={subjectFilter} onSelectSubject={(s) => setSubjectFilter(s === subjectFilter ? "" : s)} />
+        </div>
       </div>
 
       <div className="flex items-center justify-between mb-3">
@@ -219,6 +236,28 @@ export function BrowseView(props: {
         {listings.map((l) => <ListingCard key={l.id} listing={l} onClick={() => onOpen(l.id)} />)}
         {listings.length === 0 && <div className="text-center py-16 text-slate-500 text-sm rounded-xl border border-dashed border-slate-200 bg-white">No matching listings.</div>}
       </div>
+    </div>
+  );
+}
+
+function MarketStrip({ listings, visible }: { listings: Listing[]; visible: Listing[] }) {
+  const seeking = listings.reduce((s, l) => s + l.amountSeeking, 0);
+  const kids = listings.reduce((s, l) => s + l.kidsServed, 0);
+  const avg = kids > 0 ? Math.round(seeking / kids) : 0;
+  const cells = [
+    { label: "Open listings", value: String(visible.length) },
+    { label: "Capital seeking", value: formatCurrency(seeking) },
+    { label: "Children in view", value: kids.toLocaleString() },
+    { label: "Avg. per child", value: formatCurrency(avg) },
+  ];
+  return (
+    <div className="mb-5 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-xl overflow-hidden border border-[#e4ddd2] bg-[#e4ddd2]">
+      {cells.map((c) => (
+        <div key={c.label} className="bg-white px-4 py-3">
+          <p className="label">{c.label}</p>
+          <p className="num text-[20px] font-extrabold text-[#2A3D55] mt-1">{c.value}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -257,7 +296,7 @@ function MapPanel({
   const hoverStats = hover ? byState[hover.abbr] : null;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden relative">
+    <div className="bg-white rounded-xl border border-[#e4ddd2] overflow-hidden relative h-full">
       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-slate-900">Where the opportunities are</p>
@@ -265,7 +304,7 @@ function MapPanel({
         </div>
         {stateFilter && <button onClick={() => onSelectState(stateFilter)} className="text-xs font-medium text-sky-700 hover:text-sky-800">Back to U.S.</button>}
       </div>
-      <div className="h-[340px] sm:h-[400px] lg:h-[440px]">
+      <div className="h-[260px] sm:h-[300px] lg:h-[320px]">
         <ComposableMap projection="geoAlbersUsa" projectionConfig={{ scale: 800 }} width={800} height={500} style={{ width: "100%", height: "100%" }}>
           <ZoomableGroup center={center} zoom={zoom} translateExtent={[[-200, -100], [1000, 700]]}>
             <Geographies geography={GEO_URL}>
