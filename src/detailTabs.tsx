@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Listing } from "./data/listings";
 import { costPerKid, formatCurrency, formatHorizon, WORK_KIND_LABELS, MONEY_KIND_LABELS } from "./data/listings";
 import { TrustBadgeRow, ProofRows } from "./insights";
-import { ArrowLeft, MapPin, Users, DollarSign } from "lucide-react";
+import { ArrowLeft, ChevronDown, MapPin, Users, DollarSign } from "lucide-react";
 
 export function DetailView({ listing, onBack }: { listing: Listing; onBack: () => void }) {
   const cpk = costPerKid(listing);
@@ -13,57 +13,59 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
   }, [listing.id]);
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-6xl">
       <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-[#6b7786] hover:text-[#2A3D55] mb-4">
         <ArrowLeft className="w-4 h-4" /> Back to browse
       </button>
-      <div className="rounded-xl border border-[#e4ddd2] bg-white overflow-hidden">
-      <div className="p-5 sm:p-7">
-      <div className="mb-3">
-        <TrustBadgeRow listing={listing} />
-      </div>
-      <h1 className="text-[26px] sm:text-[30px] font-extrabold text-[#2A3D55] tracking-tight leading-tight">{listing.title}</h1>
-      {listing.organization && <p className="text-[#3d4d5f] mt-1.5">{listing.organization}</p>}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#e4ddd2] border border-[#e4ddd2] rounded-xl overflow-hidden my-5">
-        <Metric label="Needed" value={formatCurrency(listing.amountSeeking)} />
-        <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
-        <Metric label="Students" value={listing.kidsServed.toLocaleString()} />
-        <Metric label="Per student" value={formatCurrency(cpk)} />
-      </div>
-      <div className="h-1.5 rounded-full bg-[#e8f4fb] overflow-hidden mb-6">
-        <div className="h-full bg-[#4A94C8]" style={{ width: `${pct}%` }} />
-      </div>
-      <p className="text-[#3d4d5f] leading-relaxed mb-4">{listing.description}</p>
-      <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
-        <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
-        <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} students · {formatHorizon(listing)}</span>
-        <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
-      </div>
-      {listing.successMetric && (
-        <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Success measure</p>
-          <p className="text-sm text-slate-700">{listing.successMetric}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-5 items-start">
+        <div className="rounded-xl border border-[#e4ddd2] bg-white overflow-hidden">
+          <div className="p-5 sm:p-7">
+            <div className="mb-3">
+              <TrustBadgeRow listing={listing} />
+            </div>
+            <h1 className="text-[26px] sm:text-[30px] font-extrabold text-[#2A3D55] tracking-tight leading-tight">{listing.title}</h1>
+            {listing.organization && <p className="text-[#3d4d5f] mt-1.5">{listing.organization}</p>}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#e4ddd2] border border-[#e4ddd2] rounded-xl overflow-hidden my-5">
+              <Metric label="Needed" value={formatCurrency(listing.amountSeeking)} />
+              <Metric label="Funded" value={formatCurrency(listing.amountFunded)} />
+              <Metric label="Students" value={listing.kidsServed.toLocaleString()} />
+              <Metric label="Per student" value={formatCurrency(cpk)} />
+            </div>
+            <div className="h-1.5 rounded-full bg-[#e8f4fb] overflow-hidden mb-6">
+              <div className="h-full bg-[#4A94C8]" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="text-[#3d4d5f] leading-relaxed mb-4">{listing.description}</p>
+            <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
+              <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4" />{listing.metro}, {listing.state}</span>
+              <span className="inline-flex items-center gap-1"><Users className="w-4 h-4" />{listing.kidsServed.toLocaleString()} students · {formatHorizon(listing)}</span>
+              <span className="inline-flex items-center gap-1"><DollarSign className="w-4 h-4" />{formatCurrency(listing.amountSeeking)}</span>
+            </div>
+            {listing.successMetric && (
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Success measure</p>
+                <p className="text-sm text-slate-700">{listing.successMetric}</p>
+              </div>
+            )}
+            <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">To reach one student</p>
+              <p className="text-sm text-slate-700">
+                {formatCurrency(listing.amountSeeking)} reaches {listing.kidsServed.toLocaleString()} students over {formatHorizon(listing)} ({formatCurrency(cpk)} per student).
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{WORK_KIND_LABELS[listing.workKind]}</span>
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{MONEY_KIND_LABELS[listing.moneyKind]}</span>
+              {listing.subjects.map((s) => (
+                <span key={s} className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 text-xs font-medium">{s}</span>
+              ))}
+            </div>
+            <ProofRows listing={listing} />
+          </div>
         </div>
-      )}
-      <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 mb-4">
-        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">To reach one student</p>
-        <p className="text-sm text-slate-700">
-          {formatCurrency(listing.amountSeeking)} reaches {listing.kidsServed.toLocaleString()} students over {formatHorizon(listing)} ({formatCurrency(cpk)} per student).
-        </p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{listing.modelType}</span>
-        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{WORK_KIND_LABELS[listing.workKind]}</span>
-        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">{MONEY_KIND_LABELS[listing.moneyKind]}</span>
-        {listing.subjects.map((s) => (
-          <span key={s} className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 text-xs font-medium">{s}</span>
-        ))}
-      </div>
-      <ProofRows listing={listing} />
-      </div>
-      </div>
-      <div className="mt-6">
-        <DetailDoors listing={listing} />
+        <aside className="lg:sticky lg:top-24">
+          <DetailDoors listing={listing} />
+        </aside>
       </div>
     </div>
   );
@@ -72,10 +74,57 @@ export function DetailView({ listing, onBack }: { listing: Listing; onBack: () =
 function DetailDoors({ listing }: { listing: Listing }) {
   const money = listing.moneyKind ?? "gift";
   const showGive = money === "gift" || money === "either";
+  const [open, setOpen] = useState<"small" | "large" | null>(null);
+
+  function toggle(id: "small" | "large") {
+    setOpen((current) => (current === id ? null : id));
+  }
+
   return (
-    <div className="space-y-4">
-      <TalkDoor defaultKind={money === "ownership" ? "ownership" : "gift"} />
-      {showGive ? <GiveNowDoor /> : null}
+    <div className="space-y-3">
+      {showGive ? (
+        <GiftAccordion
+          title="Make a small gift"
+          open={open === "small"}
+          onToggle={() => toggle("small")}
+        >
+          <GiveNowDoor />
+        </GiftAccordion>
+      ) : null}
+      <GiftAccordion
+        title="Make a large gift"
+        open={open === "large"}
+        onToggle={() => toggle("large")}
+      >
+        <TalkDoor defaultKind={money === "ownership" ? "ownership" : "gift"} />
+      </GiftAccordion>
+    </div>
+  );
+}
+
+function GiftAccordion({
+  title,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  open: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-[#e4ddd2] bg-white overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left"
+      >
+        <span className="text-sm font-semibold text-[#2A3D55]">{title}</span>
+        <ChevronDown className={`w-4 h-4 text-[#6b7786] shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open ? <div className="px-4 pb-4 border-t border-[#f0e9de] pt-3">{children}</div> : null}
     </div>
   );
 }
@@ -85,9 +134,8 @@ function GiveNowDoor() {
   const [done, setDone] = useState(false);
   const presets = [25, 50, 100, 250];
   return (
-    <div className="rounded-xl border border-[#e4ddd2] bg-white p-5">
-      <p className="text-sm font-semibold text-slate-900">Small gift</p>
-      <p className="text-sm text-slate-600 mt-1">For a card gift under $1,000. Not the path for a foundation or a DAF.</p>
+    <div>
+      <p className="text-sm text-slate-600">Card gift under $1,000.</p>
       {done ? (
         <p className="text-sm font-medium text-sky-800 mt-3">Recorded on this demo. No charge yet.</p>
       ) : (
@@ -137,12 +185,11 @@ function TalkDoor({ defaultKind }: { defaultKind: "gift" | "ownership" }) {
   const [move, setMove] = useState("");
   const [done, setDone] = useState(false);
   return (
-    <div className="rounded-xl border border-[#e4ddd2] bg-white p-5">
-      <p className="text-sm font-semibold text-slate-900">Wire, grant, DAF, or ownership</p>
-      <p className="text-sm text-slate-600 mt-1">
+    <div>
+      <p className="text-sm text-slate-600">
         {defaultKind === "ownership"
-          ? "This listing is asking for an ownership stake. A program officer can follow up on a call or with documents."
-          : "This is the path for a large gift. Foundation, DAF, wire, or grant paper."}
+          ? "Ownership stake, a call, or documents."
+          : "Foundation, DAF, wire, or grant paper."}
       </p>
       {done ? (
         <p className="text-sm font-medium text-sky-800 mt-3">Request recorded on this demo. No one is notified yet.</p>
