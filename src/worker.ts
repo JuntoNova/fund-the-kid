@@ -100,6 +100,11 @@ function pitchAssetPath(pathname: string): string | null {
   )
     return "/pitch/campaigns/stem-austin.html";
   if (
+    pathname === "/pitch/campaigns/stem-austin/submit" ||
+    pathname === "/pitch/campaigns/stem-austin/submit/"
+  )
+    return "/pitch/campaigns/stem-austin/submit.html";
+  if (
     pathname === "/pitch/campaigns/hs-redesign-arizona" ||
     pathname === "/pitch/campaigns/hs-redesign-arizona/"
   )
