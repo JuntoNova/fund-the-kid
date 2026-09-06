@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Austin STEM Coalition - Deal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/pitch/pitch.css" />
+  <link rel="stylesheet" href="/pitch/campaigns/stem-austin/wl.css" />
+</head>
+<body class="wl-austin">
+  <div class="wrap">
+    <header class="topbar">
+      <a class="wordmark-customer" href="/pitch/campaigns/stem-austin">Austin STEM Coalition</a>
+      <div class="topbar-nav">
+        <a class="powered-by" href="/pitch/">Powered by <span class="ftk-script">Fund the Kid</span></a>
+        <a class="back-link" href="/pitch/campaigns/stem-austin">← Campaign home</a>
+        <span class="badge">Campaign · Austin STEM Coalition</span>
+      </div>
+    </header>
+
+    <section class="hero" id="deal-root">
+      <p class="kicker">Example investment</p>
+      <h1 id="deal-title">Loading…</h1>
+      <div class="listing-meta" id="deal-meta"></div>
+      <p class="orgline" id="deal-org"></p>
+      <div class="deal-metrics">
+        <div class="deal-metric"><p class="label">Goal</p><p class="value" id="deal-amount">—</p></div>
+        <div class="deal-metric"><p class="label">Per child</p><p class="value" id="deal-per">—</p></div>
+        <div class="deal-metric"><p class="label">Kids</p><p class="value" id="deal-kids">—</p></div>
+      </div>
+      <div class="card deal-story">
+        <h2>The story</h2>
+        <p class="note" id="deal-impact" style="margin:0"></p>
+        <p class="note" id="deal-extra" style="margin:0.85rem 0 0"></p>
+      </div>
+      <div class="point-actions" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:0.65rem">
+        <a class="btn btn-coral" href="/pitch/campaigns/stem-austin#point-person">Ask Bill about this deal</a>
+        <a class="btn btn-ghost" href="/pitch/campaigns/stem-austin">Back to board</a>
+      </div>
+      <p class="note" style="margin-top:1rem">Mock / Example listing. No live charge on this pitch page.</p>
+    </section>
+
+    <footer class="footer-note">
+      Austin STEM Coalition campaign subtree. Powered by Fund the Kid.
+    </footer>
+  </div>
+  <script>
+    (function () {
+      function money(n) {
+        return "$" + Number(n).toLocaleString("en-US");
+      }
+      function chip(label, extra) {
+        var el = document.createElement("span");
+        el.className = "chip" + (extra ? " " + extra : "");
+        el.textContent = label;
+        return el;
+      }
+      function slugFromPath() {
+        var parts = location.pathname.replace(/\/+$/, "").split("/");
+        var i = parts.indexOf("deals");
+        if (i >= 0 && parts[i + 1]) return decodeURIComponent(parts[i + 1]);
+        return new URLSearchParams(location.search).get("slug") || "";
+      }
+      var laneLabels = { advocacy: "Advocacy", supply: "Supply", confidence: "Confidence" };
+      var extras = {
+        "city-stem-center-push": "Council votes, site study, and coalition ops sit in one advocacy stack so downtown STEM capacity can clear city hall.",
+        "youth-robotics-work-act": "A Texas Legislature fight to open part-time robotics and advanced manufacturing placements for 14-year-olds.",
+        "alpha-austin-campus-seats": "Flagship Supply seat expansion. High-intensity STEM schooling modeled on Alpha-style campuses in Austin.",
+        "mobile-stem-lab-east": "A rolling lab that hits East Austin campuses with weekly rotations, kits, and instructors.",
+        "riverside-robotics-shop": "Shop seats beside the East Riverside tech corridor for build, code, and competition pathways.",
+        "families-empowered-stem-navigator": "Parent navigators route families into new STEM seats and shops across the coalition board.",
+        "austin-stem-pathway-finder": "A public comparison tool for STEM options by zip, cost, and seat type."
+      };
+
+      fetch("/pitch/listings.json", { credentials: "same-origin" })
+        .then(function (r) { return r.json(); })
+        .then(function (all) {
+          var slug = slugFromPath();
+          var item = all.filter(function (it) {
+            return it.campaign === "stem-austin" && it.slug === slug;
+          })[0];
+          if (!item) {
+            document.getElementById("deal-title").textContent = "Deal not found";
+            document.getElementById("deal-impact").textContent =
+              "That investment is not on the Austin STEM Coalition board.";
+            return;
+          }
+          document.title = "Austin STEM Coalition - " + item.title;
+          document.getElementById("deal-title").textContent = item.title;
+          var meta = document.getElementById("deal-meta");
+          meta.appendChild(chip(laneLabels[item.lane] || item.lane, "lane-tag"));
+          if (item.status) {
+            meta.appendChild(chip(item.status, "status-" + String(item.status).toLowerCase()));
+          }
+          (item.workKind || []).forEach(function (w) { meta.appendChild(chip(w)); });
+          if (item.example) meta.appendChild(chip("Example", "example"));
+          document.getElementById("deal-org").textContent =
+            item.organization + " · " + item.place + ", " + item.state;
+          document.getElementById("deal-amount").textContent = money(item.amount);
+          document.getElementById("deal-per").textContent = money(item.perChild);
+          document.getElementById("deal-kids").textContent = Number(item.children).toLocaleString("en-US");
+          document.getElementById("deal-impact").textContent = item.impact;
+          document.getElementById("deal-extra").textContent = extras[item.slug] || "";
+        })
+        .catch(function () {
+          document.getElementById("deal-title").textContent = "Could not load deal";
+        });
+    })();
+  </script>
+</body>
+</html>

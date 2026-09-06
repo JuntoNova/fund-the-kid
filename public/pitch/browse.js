@@ -16,13 +16,27 @@
     return el;
   }
 
-  function renderListing(item) {
+  function dealHref(item, campaign) {
+    if (campaign === "stem-austin" && item.slug) {
+      return "/pitch/campaigns/stem-austin/deals/" + encodeURIComponent(item.slug);
+    }
+    return null;
+  }
+
+  function renderListing(item, campaign) {
     var card = document.createElement("article");
     card.className = "listing";
     card.dataset.id = item.id;
 
     var meta = document.createElement("div");
     meta.className = "listing-meta";
+    if (item.lane) {
+      var laneLabels = { advocacy: "Advocacy", supply: "Supply", confidence: "Confidence" };
+      meta.appendChild(chip(laneLabels[item.lane] || item.lane, "lane-tag"));
+    }
+    if (item.status) {
+      meta.appendChild(chip(item.status, "status-" + String(item.status).toLowerCase()));
+    }
     (item.workKind || []).forEach(function (w) {
       meta.appendChild(chip(w));
     });
@@ -38,11 +52,11 @@
     org.className = "orgline";
     org.textContent =
       item.organization +
-      " - " +
+      " · " +
       item.place +
       ", " +
       item.state +
-      " - " +
+      " · " +
       Number(item.children).toLocaleString("en-US") +
       " kids";
     card.appendChild(org);
@@ -64,6 +78,14 @@
     impact.textContent = item.impact;
     card.appendChild(impact);
 
+    var href = dealHref(item, campaign);
+    if (href) {
+      var link = document.createElement("a");
+      link.className = "listing-link";
+      link.href = href;
+      link.appendChild(card);
+      return link;
+    }
     return card;
   }
 
@@ -134,7 +156,9 @@
         .toLowerCase();
       var subjects = Object.keys(activeSubjects);
       var filtered = pool.filter(function (it) {
-        if (campaign === "stem-austin" && !it.campaignApproved) return false;
+        if (campaign === "stem-austin") {
+          if (!it.campaignApproved || it.campaign !== "stem-austin") return false;
+        }
         if (subjects.length) {
           var ok = (it.workKind || []).some(function (w) {
             return activeSubjects[w];
@@ -162,7 +186,7 @@
         return;
       }
       filtered.forEach(function (it) {
-        root.appendChild(renderListing(it));
+        root.appendChild(renderListing(it, campaign));
       });
     }
 

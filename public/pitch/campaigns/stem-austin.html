@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="/pitch/pitch.css" />
+  <link rel="stylesheet" href="/pitch/campaigns/stem-austin/wl.css" />
   <style>
     body.wl-austin {
       --cream: #F7F4EF;
@@ -74,6 +75,154 @@
       text-transform: uppercase;
     }
     body.wl-austin .hero .lede { max-width: 48rem; }
+
+    body.wl-austin .proof-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin: 0.25rem 0 0.5rem;
+    }
+    @media (max-width: 820px) {
+      body.wl-austin .proof-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    body.wl-austin .proof-cell {
+      background: #fff;
+      border: 1.5px solid rgba(11, 31, 51, 0.12);
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+      box-shadow: var(--shadow);
+    }
+    body.wl-austin .proof-cell .label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.35rem;
+    }
+    body.wl-austin .proof-cell .value {
+      font-size: clamp(1.25rem, 2.6vw, 1.65rem);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.15;
+      margin: 0;
+    }
+    body.wl-austin .proof-cell .hint {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    body.wl-austin .proof-cell.accent {
+      border-color: var(--coral);
+      background: linear-gradient(180deg, rgba(255,90,54,0.08), #fff 55%);
+    }
+    body.wl-austin .proof-cell.accent .value { color: var(--coral); }
+    body.wl-austin .board-gap {
+      margin: 0.85rem 0 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    body.wl-austin .board-gap strong { color: var(--navy); }
+
+    body.wl-austin .point-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.15rem 1.35rem;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      body.wl-austin .point-card { grid-template-columns: 1fr; }
+    }
+    body.wl-austin .point-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #00D4FF 0%, #0B1F33 70%);
+      color: #F7F4EF;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.55rem;
+      letter-spacing: -0.03em;
+      border: 3px solid #fff;
+      box-shadow: 0 8px 24px rgba(11, 31, 51, 0.18);
+    }
+    body.wl-austin .point-meta { margin: 0 0 0.35rem; color: var(--muted); font-size: 0.9rem; }
+    body.wl-austin .point-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.95rem;
+    }
+    body.wl-austin .btn-coral {
+      background: var(--coral);
+      color: #fff;
+    }
+    body.wl-austin .btn-coral:hover { filter: brightness(1.06); color: #fff; }
+    body.wl-austin .submit-form label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin: 0.75rem 0 0.35rem;
+    }
+    body.wl-austin .submit-form label:first-of-type { margin-top: 0; }
+    body.wl-austin .submit-form input,
+    body.wl-austin .submit-form select,
+    body.wl-austin .submit-form textarea {
+      width: 100%;
+      font: inherit;
+      padding: 0.65rem 0.8rem;
+      border-radius: 10px;
+      border: 1.5px solid rgba(11, 31, 51, 0.2);
+      background: #fff;
+      color: var(--ink);
+    }
+    body.wl-austin .submit-form textarea { min-height: 88px; resize: vertical; }
+    body.wl-austin .submit-form .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      body.wl-austin .submit-form .form-row { grid-template-columns: 1fr; }
+    }
+    body.wl-austin .submit-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+    body.wl-austin .submit-success {
+      display: none;
+      background: rgba(0, 212, 255, 0.12);
+      border: 1.5px solid var(--sky);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin-top: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    body.wl-austin .submit-success.show { display: block; }
+    body.wl-austin .pending-box {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(11, 31, 51, 0.1);
+    }
+    body.wl-austin .pending-box h3 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+    body.wl-austin .pending-item {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0.35rem 0;
+    }
+    body.wl-austin .cta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin: 0.5rem 0 0;
+    }
   </style>
 </head>
 <body class="wl-austin">
@@ -116,6 +265,128 @@
       </div>
     </section>
 
+
+
+    <section class="section" id="campaign-proof" style="padding-top:0">
+      <div class="section-head">
+        <h2>Coalition board at a glance</h2>
+        <p class="note">Campaign-scoped totals from the seven approved Example deals. Public Browse uses the same four-stat pattern for the open marketplace.</p>
+      </div>
+      <div class="proof-strip" id="proof-strip">
+        <div class="proof-cell">
+          <p class="label">Open listings</p>
+          <p class="value" id="proof-open-listings">7</p>
+          <p class="hint">Approved on this campaign</p>
+        </div>
+        <div class="proof-cell accent">
+          <p class="label">Still needed</p>
+          <p class="value" id="proof-still-needed">$3.3M</p>
+          <p class="hint">Open deal dollars</p>
+        </div>
+        <div class="proof-cell">
+          <p class="label">Students reached</p>
+          <p class="value" id="proof-kids">36,550</p>
+          <p class="hint">On approved campaign deals</p>
+        </div>
+        <div class="proof-cell">
+          <p class="label">To reach one student</p>
+          <p class="value" id="proof-per-student">$90</p>
+          <p class="hint">Still needed ÷ kids</p>
+        </div>
+      </div>
+      <p class="board-gap" id="board-gap">
+        Coalition board goal <strong>$8.0M</strong>.
+        Moving now <strong>$4.7M</strong>.
+        Capital gap still open <strong>$3.3M</strong>.
+      </p>
+    </section>
+
+    <section class="section" id="point-person">
+      <div class="section-head">
+        <h2>Your campaign lead</h2>
+        <p class="note">A human playing point on the Austin STEM Coalition effort. Example / mock persona for this pitch.</p>
+      </div>
+      <article class="card point-card">
+        <div class="point-avatar" aria-hidden="true">BN</div>
+        <div>
+          <div class="listing-meta" style="margin-bottom:0.45rem">
+            <span class="chip example">Example</span>
+            <span class="chip">Point person</span>
+          </div>
+          <h3 style="margin:0 0 0.25rem">Bill Nye</h3>
+          <p class="point-meta">Science educator · Campaign lead · Austin STEM Coalition</p>
+          <p class="note" style="margin:0">
+            Bill plays point for the Austin STEM Coalition. He connects funders, operators, and city fights so approved deals move on one board.
+          </p>
+          <div class="point-actions">
+            <a class="btn btn-coral" href="mailto:bill.nye.mock@fundthekid.example?subject=Austin%20STEM%20Coalition%20-%20need%20help">Need help? Contact Bill</a>
+            <a class="btn btn-ghost" href="#submit-opportunity">Submit an opportunity</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="submit-opportunity">
+      <div class="section-head">
+        <h2>Submit an opportunity</h2>
+        <p class="note">Operators, parents, and orgs can propose a deal for this campaign. Public List on Fund the Kid goes live right away. Campaign submits stay pending until Bill approves.</p>
+      </div>
+      <article class="card">
+        <p class="submit-note">
+          Mock form for the pitch. Your request goes to Bill for review. It will not show on the map or approved deal board until Bill signs off.
+        </p>
+        <form class="submit-form" id="campaign-submit-form" novalidate>
+          <label for="sub-title">Opportunity title</label>
+          <input id="sub-title" name="title" required maxlength="120" placeholder="e.g. Eastside coding lab seats" />
+
+          <div class="form-row">
+            <div>
+              <label for="sub-org">Organization</label>
+              <input id="sub-org" name="organization" required maxlength="80" placeholder="School, nonprofit, or shop" />
+            </div>
+            <div>
+              <label for="sub-lane">Lane</label>
+              <select id="sub-lane" name="lane" required>
+                <option value="advocacy">Advocacy</option>
+                <option value="supply" selected>Supply</option>
+                <option value="confidence">Confidence</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="sub-amount">Goal (USD)</label>
+              <input id="sub-amount" name="amount" type="number" min="1" step="1" required placeholder="250000" />
+            </div>
+            <div>
+              <label for="sub-kids">Kids reached</label>
+              <input id="sub-kids" name="children" type="number" min="1" step="1" required placeholder="120" />
+            </div>
+          </div>
+
+          <label for="sub-place">Place</label>
+          <input id="sub-place" name="place" required maxlength="80" value="Austin, TX" />
+
+          <label for="sub-impact">What the gift does</label>
+          <textarea id="sub-impact" name="impact" required maxlength="400" placeholder="Short outcome for funders and operators"></textarea>
+
+          <div class="cta-strip" style="margin-top:1.1rem">
+            <button class="btn btn-coral" type="submit">Send to Bill for approval</button>
+            <span class="chip example">Example / mock</span>
+          </div>
+        </form>
+        <div class="submit-success" id="submit-success" role="status">
+          Sent to Bill for approval. The opportunity will appear on the Austin STEM Coalition board after review.
+        </div>
+        <div class="pending-box" id="pending-box" hidden>
+          <h3>Your pending submissions</h3>
+          <div id="pending-list"></div>
+          <p class="note" style="margin:0.5rem 0 0">Pending items stay off the approved map and deal cards until Bill approves.</p>
+        </div>
+      </article>
+    </section>
+
     <section class="section">
       <div class="section-head">
         <h2>Map and cost stack</h2>
@@ -143,6 +414,7 @@
               <div class="label"><span>Navigator family</span><span>$400</span></div>
               <div class="bar-track"><div class="bar-fill" style="width:2.3%"></div></div>
             </div>
+
           </div>
         </div>
       </div>
@@ -179,7 +451,7 @@
 
     <footer class="footer-note">
       Same listing database under each lane. Donors and operators differ by lane.
-      Campaign mock: Austin STEM Coalition. Powered by Fund the Kid.
+      Campaign mock: Austin STEM Coalition. Point person and campaign submit are Example / mock. Powered by Fund the Kid.
     </footer>
   </div>
 
@@ -206,10 +478,44 @@
             return it.campaignApproved && it.campaign === "stem-austin";
           });
 
+
+          var openDeals = deals.filter(function (d) { return String(d.status).toLowerCase() === "open"; });
+          var movingDeals = deals.filter(function (d) { return String(d.status).toLowerCase() === "moving"; });
+          var stillNeeded = openDeals.reduce(function (s, d) { return s + Number(d.amount || 0); }, 0);
+          var movingAmt = movingDeals.reduce(function (s, d) { return s + Number(d.amount || 0); }, 0);
+          var boardGoal = deals.reduce(function (s, d) { return s + Number(d.amount || 0); }, 0);
+          var kids = deals.reduce(function (s, d) { return s + Number(d.children || 0); }, 0);
+          var per = kids > 0 ? Math.round(stillNeeded / kids) : 0;
+          function moneyCompact(n) {
+            if (n >= 1000000) {
+              var m = n / 1000000;
+              return "$" + (Math.round(m * 10) / 10).toFixed(1).replace(/\.0$/, "") + "M";
+            }
+            return money(n);
+          }
+          var elListings = document.getElementById("proof-open-listings");
+          var elStill = document.getElementById("proof-still-needed");
+          var elKids = document.getElementById("proof-kids");
+          var elPer = document.getElementById("proof-per-student");
+          var elGap = document.getElementById("board-gap");
+          if (elListings) elListings.textContent = String(deals.length);
+          if (elStill) elStill.textContent = moneyCompact(stillNeeded);
+          if (elKids) elKids.textContent = Number(kids).toLocaleString("en-US");
+          if (elPer) elPer.textContent = money(per);
+          if (elGap) {
+            elGap.innerHTML =
+              "Coalition board goal <strong>" + moneyCompact(boardGoal) + "</strong>. " +
+              "Moving now <strong>" + moneyCompact(movingAmt) + "</strong>. " +
+              "Capital gap still open <strong>" + moneyCompact(stillNeeded) + "</strong>.";
+          }
+
           deals.forEach(function (m) {
             if (m.lat == null || m.lng == null) return;
             var label = (laneLabels[m.lane] || m.lane) + ": " + m.title;
-            L.marker([m.lat, m.lng]).addTo(map).bindPopup(label);
+            var popup = m.slug
+              ? '<a href="/pitch/campaigns/stem-austin/deals/' + encodeURIComponent(m.slug) + '">' + label + "</a>"
+              : label;
+            L.marker([m.lat, m.lng]).addTo(map).bindPopup(popup);
           });
 
           var root = document.getElementById("sample-deals");
@@ -226,6 +532,12 @@
             subset.forEach(function (item) {
               var card = document.createElement("article");
               card.className = "listing";
+              var wrapLink = null;
+              if (item.slug) {
+                wrapLink = document.createElement("a");
+                wrapLink.className = "listing-link";
+                wrapLink.href = "/pitch/campaigns/stem-austin/deals/" + encodeURIComponent(item.slug);
+              }
               var meta = document.createElement("div");
               meta.className = "listing-meta";
               var laneChip = document.createElement("span");
@@ -270,7 +582,12 @@
               impact.className = "impact";
               impact.textContent = item.impact;
               card.appendChild(impact);
-              grid.appendChild(card);
+              if (wrapLink) {
+                wrapLink.appendChild(card);
+                grid.appendChild(wrapLink);
+              } else {
+                grid.appendChild(card);
+              }
             });
             group.appendChild(grid);
             root.appendChild(group);
@@ -282,5 +599,78 @@
         });
     })();
   </script>
+
+  <script>
+    (function () {
+      var KEY = "ftk_stem_austin_pending_v1";
+      var form = document.getElementById("campaign-submit-form");
+      var success = document.getElementById("submit-success");
+      var pendingBox = document.getElementById("pending-box");
+      var pendingList = document.getElementById("pending-list");
+      if (!form) return;
+
+      function loadPending() {
+        try {
+          return JSON.parse(sessionStorage.getItem(KEY) || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function savePending(items) {
+        sessionStorage.setItem(KEY, JSON.stringify(items));
+      }
+
+      function renderPending() {
+        var items = loadPending();
+        if (!items.length) {
+          pendingBox.hidden = true;
+          pendingList.innerHTML = "";
+          return;
+        }
+        pendingBox.hidden = false;
+        pendingList.innerHTML = items
+          .map(function (it) {
+            return (
+              '<p class="pending-item"><strong>' +
+              it.title +
+              "</strong> · " +
+              it.lane +
+              " · Pending Bill approval · Example</p>"
+            );
+          })
+          .join("");
+      }
+
+      renderPending();
+
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        if (!form.reportValidity()) return;
+        var item = {
+          title: document.getElementById("sub-title").value.trim(),
+          organization: document.getElementById("sub-org").value.trim(),
+          lane: document.getElementById("sub-lane").value,
+          amount: Number(document.getElementById("sub-amount").value),
+          children: Number(document.getElementById("sub-kids").value),
+          place: document.getElementById("sub-place").value.trim(),
+          impact: document.getElementById("sub-impact").value.trim(),
+          status: "Pending",
+          example: true,
+          at: Date.now(),
+        };
+        var items = loadPending();
+        items.unshift(item);
+        savePending(items);
+        form.reset();
+        document.getElementById("sub-place").value = "Austin, TX";
+        document.getElementById("sub-lane").value = "supply";
+        success.classList.add("show");
+        renderPending();
+        success.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    })();
+  </script>
+
 </body>
 </html>
