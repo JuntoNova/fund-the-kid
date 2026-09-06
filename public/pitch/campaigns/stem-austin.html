@@ -159,69 +159,18 @@
       color: #fff;
     }
     body.wl-austin .btn-coral:hover { filter: brightness(1.06); color: #fff; }
-    body.wl-austin .submit-form label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--navy);
-      margin: 0.75rem 0 0.35rem;
-    }
-    body.wl-austin .submit-form label:first-of-type { margin-top: 0; }
-    body.wl-austin .submit-form input,
-    body.wl-austin .submit-form select,
-    body.wl-austin .submit-form textarea {
-      width: 100%;
-      font: inherit;
-      padding: 0.65rem 0.8rem;
-      border-radius: 10px;
-      border: 1.5px solid rgba(11, 31, 51, 0.2);
-      background: #fff;
-      color: var(--ink);
-    }
-    body.wl-austin .submit-form textarea { min-height: 88px; resize: vertical; }
-    body.wl-austin .submit-form .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-    @media (max-width: 640px) {
-      body.wl-austin .submit-form .form-row { grid-template-columns: 1fr; }
-    }
-    body.wl-austin .submit-note {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin: 0 0 1rem;
-    }
-    body.wl-austin .submit-success {
-      display: none;
-      background: rgba(0, 212, 255, 0.12);
-      border: 1.5px solid var(--sky);
-      border-radius: var(--radius);
-      padding: 1rem 1.15rem;
-      margin-top: 1rem;
-      font-weight: 700;
-      color: var(--navy);
-    }
-    body.wl-austin .submit-success.show { display: block; }
-    body.wl-austin .pending-box {
-      margin-top: 1rem;
-      padding-top: 0.85rem;
-      border-top: 1px solid rgba(11, 31, 51, 0.1);
-    }
-    body.wl-austin .pending-box h3 { font-size: 0.95rem; margin-bottom: 0.5rem; }
-    body.wl-austin .pending-item {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin: 0.35rem 0;
-    }
     body.wl-austin .cta-strip {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
       align-items: center;
       margin: 0.5rem 0 0;
+    }
+
+    body.wl-austin .pill-cta {
+      padding: 0.45rem 0.95rem;
+      font-size: 0.82rem;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -231,6 +180,7 @@
       <a class="wordmark-customer" href="/pitch/campaigns/stem-austin">Austin STEM Coalition</a>
       <div class="topbar-nav">
         <a class="powered-by" href="/pitch/">Powered by <span class="ftk-script">Fund the Kid</span></a>
+        <a class="btn btn-coral pill-cta" href="/pitch/campaigns/stem-austin/submit">Submit an opportunity</a>
         <span class="badge">Campaign · Austin STEM Coalition</span>
       </div>
     </header>
@@ -320,69 +270,7 @@
           </p>
           <div class="point-actions">
             <a class="btn btn-coral" href="mailto:bill.nye.mock@fundthekid.example?subject=Austin%20STEM%20Coalition%20-%20need%20help">Need help? Contact Bill</a>
-            <a class="btn btn-ghost" href="#submit-opportunity">Submit an opportunity</a>
           </div>
-        </div>
-      </article>
-    </section>
-
-    <section class="section" id="submit-opportunity">
-      <div class="section-head">
-        <h2>Submit an opportunity</h2>
-        <p class="note">Operators, parents, and orgs can propose a deal for this campaign. Public List on Fund the Kid goes live right away. Campaign submits stay pending until Bill approves.</p>
-      </div>
-      <article class="card">
-        <p class="submit-note">
-          Mock form for the pitch. Your request goes to Bill for review. It will not show on the map or approved deal board until Bill signs off.
-        </p>
-        <form class="submit-form" id="campaign-submit-form" novalidate>
-          <label for="sub-title">Opportunity title</label>
-          <input id="sub-title" name="title" required maxlength="120" placeholder="e.g. Eastside coding lab seats" />
-
-          <div class="form-row">
-            <div>
-              <label for="sub-org">Organization</label>
-              <input id="sub-org" name="organization" required maxlength="80" placeholder="School, nonprofit, or shop" />
-            </div>
-            <div>
-              <label for="sub-lane">Lane</label>
-              <select id="sub-lane" name="lane" required>
-                <option value="advocacy">Advocacy</option>
-                <option value="supply" selected>Supply</option>
-                <option value="confidence">Confidence</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div>
-              <label for="sub-amount">Goal (USD)</label>
-              <input id="sub-amount" name="amount" type="number" min="1" step="1" required placeholder="250000" />
-            </div>
-            <div>
-              <label for="sub-kids">Kids reached</label>
-              <input id="sub-kids" name="children" type="number" min="1" step="1" required placeholder="120" />
-            </div>
-          </div>
-
-          <label for="sub-place">Place</label>
-          <input id="sub-place" name="place" required maxlength="80" value="Austin, TX" />
-
-          <label for="sub-impact">What the gift does</label>
-          <textarea id="sub-impact" name="impact" required maxlength="400" placeholder="Short outcome for funders and operators"></textarea>
-
-          <div class="cta-strip" style="margin-top:1.1rem">
-            <button class="btn btn-coral" type="submit">Send to Bill for approval</button>
-            <span class="chip example">Example / mock</span>
-          </div>
-        </form>
-        <div class="submit-success" id="submit-success" role="status">
-          Sent to Bill for approval. The opportunity will appear on the Austin STEM Coalition board after review.
-        </div>
-        <div class="pending-box" id="pending-box" hidden>
-          <h3>Your pending submissions</h3>
-          <div id="pending-list"></div>
-          <p class="note" style="margin:0.5rem 0 0">Pending items stay off the approved map and deal cards until Bill approves.</p>
         </div>
       </article>
     </section>
@@ -414,7 +302,6 @@
               <div class="label"><span>Navigator family</span><span>$400</span></div>
               <div class="bar-track"><div class="bar-fill" style="width:2.3%"></div></div>
             </div>
-
           </div>
         </div>
       </div>
@@ -597,78 +484,6 @@
           document.getElementById("sample-deals").innerHTML =
             '<p class="empty">Could not load sample deals.</p>';
         });
-    })();
-  </script>
-
-  <script>
-    (function () {
-      var KEY = "ftk_stem_austin_pending_v1";
-      var form = document.getElementById("campaign-submit-form");
-      var success = document.getElementById("submit-success");
-      var pendingBox = document.getElementById("pending-box");
-      var pendingList = document.getElementById("pending-list");
-      if (!form) return;
-
-      function loadPending() {
-        try {
-          return JSON.parse(sessionStorage.getItem(KEY) || "[]");
-        } catch (e) {
-          return [];
-        }
-      }
-
-      function savePending(items) {
-        sessionStorage.setItem(KEY, JSON.stringify(items));
-      }
-
-      function renderPending() {
-        var items = loadPending();
-        if (!items.length) {
-          pendingBox.hidden = true;
-          pendingList.innerHTML = "";
-          return;
-        }
-        pendingBox.hidden = false;
-        pendingList.innerHTML = items
-          .map(function (it) {
-            return (
-              '<p class="pending-item"><strong>' +
-              it.title +
-              "</strong> · " +
-              it.lane +
-              " · Pending Bill approval · Example</p>"
-            );
-          })
-          .join("");
-      }
-
-      renderPending();
-
-      form.addEventListener("submit", function (ev) {
-        ev.preventDefault();
-        if (!form.reportValidity()) return;
-        var item = {
-          title: document.getElementById("sub-title").value.trim(),
-          organization: document.getElementById("sub-org").value.trim(),
-          lane: document.getElementById("sub-lane").value,
-          amount: Number(document.getElementById("sub-amount").value),
-          children: Number(document.getElementById("sub-kids").value),
-          place: document.getElementById("sub-place").value.trim(),
-          impact: document.getElementById("sub-impact").value.trim(),
-          status: "Pending",
-          example: true,
-          at: Date.now(),
-        };
-        var items = loadPending();
-        items.unshift(item);
-        savePending(items);
-        form.reset();
-        document.getElementById("sub-place").value = "Austin, TX";
-        document.getElementById("sub-lane").value = "supply";
-        success.classList.add("show");
-        renderPending();
-        success.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      });
     })();
   </script>
 

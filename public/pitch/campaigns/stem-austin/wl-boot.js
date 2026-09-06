@@ -14,6 +14,7 @@
       '<a class="wordmark-customer" href="/pitch/campaigns/stem-austin">Austin STEM Coalition</a>' +
       '<div class="topbar-nav">' +
       '<a class="powered-by" href="/pitch/">Powered by <span class="ftk-script">Fund the Kid</span></a>' +
+      '<a class="btn btn-coral pill-cta" href="/pitch/campaigns/stem-austin/submit">Submit an opportunity</a>' +
       '<a class="back-link" href="/pitch/campaigns/stem-austin">← Campaign home</a>' +
       '<span class="badge">Campaign · Austin STEM Coalition</span>' +
       "</div>";

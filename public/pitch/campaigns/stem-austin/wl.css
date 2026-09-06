@@ -87,3 +87,11 @@ body.wl-austin .deal-metric .value {
   font-weight: 800;
   color: var(--navy);
 }
+
+body.wl-austin .pill-cta {
+  padding: 0.45rem 0.95rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+body.wl-austin .btn-coral { background: var(--coral, #FF5A36); color: #fff; text-decoration: none; }
+body.wl-austin .btn-coral:hover { filter: brightness(1.06); color: #fff; }
