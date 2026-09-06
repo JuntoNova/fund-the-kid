@@ -99,6 +99,10 @@ function pitchAssetPath(pathname: string): string | null {
     pathname === "/pitch/campaigns/stem-austin/"
   )
     return "/pitch/campaigns/stem-austin.html";
+  const dealMatch = pathname.match(
+    /^\/pitch\/campaigns\/stem-austin\/deals\/([^/]+)\/?$/
+  );
+  if (dealMatch) return "/pitch/campaigns/stem-austin/deal.html";
   return null;
 }
 
@@ -145,8 +149,6 @@ export default {
 
     const mapped = pitchAssetPath(pathname);
     if (mapped) {
-      // Fresh GET to the .html asset — do not forward the original Request,
-      // or Assets html redirects can loop with run_worker_first.
       const assetUrl = new URL(mapped, url.origin);
       assetUrl.search = url.search;
       return env.ASSETS.fetch(assetUrl);
