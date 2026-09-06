@@ -99,6 +99,16 @@ function pitchAssetPath(pathname: string): string | null {
     pathname === "/pitch/campaigns/stem-austin/"
   )
     return "/pitch/campaigns/stem-austin.html";
+  if (
+    pathname === "/pitch/campaigns/hs-redesign-arizona" ||
+    pathname === "/pitch/campaigns/hs-redesign-arizona/"
+  )
+    return "/pitch/campaigns/hs-redesign-arizona.html";
+  if (
+    pathname === "/pitch/campaigns/early-literacy-detroit" ||
+    pathname === "/pitch/campaigns/early-literacy-detroit/"
+  )
+    return "/pitch/campaigns/early-literacy-detroit.html";
   const dealMatch = pathname.match(
     /^\/pitch\/campaigns\/stem-austin\/deals\/([^/]+)\/?$/
   );
