@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fund the Kid - Confidence lane</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/pitch/pitch.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="wordmark" href="/pitch/">Fund the Kid</a>
+      <div class="topbar-nav">
+        <a class="back-link" href="/pitch/">← Pitch home</a>
+        <span class="badge">Pre-filtered · Confidence</span>
+      </div>
+    </header>
+
+    <section class="hero" style="padding-bottom:0.5rem">
+      <p class="kicker">Confidence lane</p>
+      <h1>Confidence</h1>
+      <p class="lede">Audits, dashboards, and proof so donors can fund with clear eyes.</p>
+    </section>
+
+    <div class="controls">
+      <input class="search" id="search" type="search" placeholder="Search listings" aria-label="Search listings" />
+      <button type="button" class="btn btn-ghost" id="filter-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
+    </div>
+    <div class="filters-panel" id="filters-panel">
+      <p class="note" style="margin:0 0 0.5rem">Subject chips (optional)</p>
+      <div class="chip-row" id="subject-chips"></div>
+    </div>
+
+    <div class="listings" id="listings" data-lane="confidence"></div>
+
+    <footer class="footer-note">
+      Same listing database under each lane. Donors and operators differ by lane.
+      Mock campaign: <a href="/pitch/campaigns/stem-austin">STEM in Austin</a>.
+    </footer>
+  </div>
+  <script src="/pitch/browse.js"></script>
+</body>
+</html>
