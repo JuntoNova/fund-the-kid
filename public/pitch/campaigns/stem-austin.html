@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fund the Kid - STEM in Austin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="/pitch/pitch.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="wordmark" href="/pitch/">Fund the Kid</a>
+      <div class="topbar-nav">
+        <a class="back-link" href="/pitch/">← Pitch home</a>
+        <span class="badge">Campaign - STEM in Austin</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="kicker">Mock campaign</p>
+      <h1>STEM in Austin</h1>
+      <p class="lede campaign-intro">
+        A place-based mock that shows how Advocacy, Supply, and Confidence share one listing field
+        while donors and operators still sort by lane.
+      </p>
+      <div class="chip-row" style="margin-top:0.5rem">
+        <span class="chip">Place</span>
+        <span class="chip">Program</span>
+        <span class="chip">Company</span>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="two-col">
+        <article class="card">
+          <h2>Why</h2>
+          <p class="note" style="margin:0">
+            Austin has demand for hands-on STEM and uneven access by zip code.
+            Donors want a clear map of what is moving, what is open, and where a gift lands.
+          </p>
+        </article>
+        <article class="card">
+          <h2>What</h2>
+          <p class="note" style="margin:0">
+            Approved Supply deals for labs, tutoring pods, and toolkits sit beside Advocacy and
+            Confidence work that keeps seats filled and outcomes honest.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Map and cost stack</h2>
+        <p class="note">Three sample Supply pins. Cost bars show moving vs open dollars and unit costs.</p>
+      </div>
+      <div class="map-panel">
+        <div id="map" role="img" aria-label="Austin map with sample STEM deals"></div>
+        <div class="cost-panel">
+          <div class="cost-row"><span>Moving</span><strong>$2.1M</strong></div>
+          <div class="cost-row"><span>Open</span><strong>$6.7M</strong></div>
+          <div class="bar-list">
+            <div class="bar-item">
+              <div class="label"><span>STEM</span><span>$4k</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="label"><span>Labs / places</span><span>$2k</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:50%"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="label"><span>Tutoring</span><span>$1k</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:25%"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="label"><span>Tools</span><span>$375</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:9.4%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Browse by lane</h2>
+        <p class="note">Campaign filter applied where listings are approved for STEM in Austin.</p>
+      </div>
+      <div class="lane-boxes">
+        <a class="lane-box" href="/pitch/lanes/advocacy?campaign=stem-austin">
+          <h3>Advocacy</h3>
+          <p>Rules and coalitions that keep STEM seats open.</p>
+        </a>
+        <a class="lane-box" href="/pitch/lanes/supply?campaign=stem-austin">
+          <h3>Supply</h3>
+          <p>Labs, pods, and kits ready for gifts.</p>
+        </a>
+        <a class="lane-box" href="/pitch/lanes/confidence?campaign=stem-austin">
+          <h3>Confidence</h3>
+          <p>Reporting and audits for multi-site STEM gifts.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Sample approved deals (Supply)</h2>
+        <p class="note">Three cards from the mock listing set.</p>
+      </div>
+      <div class="listings" id="sample-deals"></div>
+    </section>
+
+    <footer class="footer-note">
+      Same listing database under each lane. Donors and operators differ by lane.
+      Mock campaign: STEM in Austin.
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      var map = L.map("map").setView([30.27, -97.74], 11);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap",
+      }).addTo(map);
+
+      var markers = [
+        { lat: 30.2711, lng: -97.7074, title: "Mobile STEM lab" },
+        { lat: 30.2505, lng: -97.7543, title: "Robotics coaching pods" },
+        { lat: 30.2982, lng: -97.7398, title: "Maker club toolkits" },
+      ];
+      markers.forEach(function (m) {
+        L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.title);
+      });
+
+      function money(n) {
+        return "$" + Number(n).toLocaleString("en-US");
+      }
+
+      fetch("/pitch/listings.json", { credentials: "same-origin" })
+        .then(function (r) { return r.json(); })
+        .then(function (all) {
+          var root = document.getElementById("sample-deals");
+          var deals = all.filter(function (it) {
+            return it.lane === "supply" && it.campaignApproved;
+          }).slice(0, 3);
+          deals.forEach(function (item) {
+            var card = document.createElement("article");
+            card.className = "listing";
+            var meta = document.createElement("div");
+            meta.className = "listing-meta";
+            (item.workKind || []).forEach(function (w) {
+              var c = document.createElement("span");
+              c.className = "chip";
+              c.textContent = w;
+              meta.appendChild(c);
+            });
+            if (item.example) {
+              var ex = document.createElement("span");
+              ex.className = "chip example";
+              ex.textContent = "Example";
+              meta.appendChild(ex);
+            }
+            card.appendChild(meta);
+            var h = document.createElement("h3");
+            h.textContent = item.title;
+            card.appendChild(h);
+            var org = document.createElement("p");
+            org.className = "orgline";
+            org.textContent =
+              item.organization + " - " + item.place + ", " + item.state +
+              " - " + Number(item.children).toLocaleString("en-US") + " kids";
+            card.appendChild(org);
+            var moneyRow = document.createElement("div");
+            moneyRow.className = "listing-money";
+            moneyRow.innerHTML =
+              '<span class="amt">' + money(item.amount) + '</span>' +
+              '<span class="per">' + money(item.perChild) + " per child</span>";
+            card.appendChild(moneyRow);
+            var impact = document.createElement("p");
+            impact.className = "impact";
+            impact.textContent = item.impact;
+            card.appendChild(impact);
+            root.appendChild(card);
+          });
+        })
+        .catch(function () {
+          document.getElementById("sample-deals").innerHTML =
+            '<p class="empty">Could not load sample deals.</p>';
+        });
+    })();
+  </script>
+</body>
+</html>
