@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fund the Kid - Pitch login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/pitch/pitch.css" />
+</head>
+<body>
+  <div class="login-shell">
+    <div class="login-card">
+      <span class="wordmark">Fund the Kid</span>
+      <p class="sub">Investor pitch access</p>
+      <p class="err" id="err" aria-live="polite"></p>
+      <form id="login-form" autocomplete="current-password">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required autofocus />
+        <button class="btn btn-block" type="submit">Enter pitch</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var form = document.getElementById("login-form");
+      var err = document.getElementById("err");
+      var params = new URLSearchParams(window.location.search);
+      var next = params.get("next") || "/pitch";
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        err.textContent = "";
+        var password = document.getElementById("password").value;
+        try {
+          var res = await fetch("/pitch/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ password: password }),
+          });
+          var data = {};
+          try { data = await res.json(); } catch (_) {}
+          if (!res.ok || !data.ok) {
+            err.textContent = res.status === 503
+              ? "Access is not configured yet."
+              : "That password did not work. Try again.";
+            return;
+          }
+          window.location.href = next.startsWith("/pitch") ? next : "/pitch/";
+        } catch (_) {
+          err.textContent = "Network error. Try again.";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
