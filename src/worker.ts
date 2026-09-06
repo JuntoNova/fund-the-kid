@@ -145,9 +145,11 @@ export default {
 
     const mapped = pitchAssetPath(pathname);
     if (mapped) {
+      // Fresh GET to the .html asset — do not forward the original Request,
+      // or Assets html redirects can loop with run_worker_first.
       const assetUrl = new URL(mapped, url.origin);
       assetUrl.search = url.search;
-      return env.ASSETS.fetch(new Request(assetUrl.toString(), request));
+      return env.ASSETS.fetch(assetUrl);
     }
 
     return env.ASSETS.fetch(request);
