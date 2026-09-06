@@ -1,0 +1,89 @@
+/* Austin STEM Coalition white-label — campaign subtree only */
+body.wl-austin {
+  --cream: #F7F4EF;
+  --navy: #0B1F33;
+  --sky: #00D4FF;
+  --sky-soft: rgba(0, 212, 255, 0.18);
+  --ink: #0B1F33;
+  --muted: #4a5d70;
+  --card: #ffffff;
+  --dash: #c9c2b8;
+  --ok: #0B1F33;
+  --coral: #FF5A36;
+  --shadow: 0 10px 32px rgba(11, 31, 51, 0.1);
+  background: var(--cream);
+  color: var(--ink);
+}
+body.wl-austin .wordmark-customer {
+  font-family: "Nunito", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  text-decoration: none;
+  line-height: 1.15;
+}
+body.wl-austin .wordmark-customer:hover { color: var(--navy); text-decoration: none; }
+body.wl-austin .badge {
+  background: rgba(255, 90, 54, 0.12);
+  border-color: var(--coral);
+  color: var(--navy);
+}
+body.wl-austin .chip { background: var(--sky-soft); color: var(--navy); }
+body.wl-austin .chip.status-moving { background: rgba(0, 212, 255, 0.22); border: 1px solid var(--sky); }
+body.wl-austin .chip.status-open { background: rgba(255, 90, 54, 0.14); border: 1px solid var(--coral); }
+body.wl-austin .chip.lane-tag { background: #fff; border: 1px solid rgba(11, 31, 51, 0.18); }
+body.wl-austin .listing-money .amt { color: var(--navy); }
+body.wl-austin .bar-fill { background: linear-gradient(90deg, var(--sky), var(--coral)); }
+body.wl-austin .lane-box:hover { border-color: var(--sky); }
+body.wl-austin .powered-by {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+}
+body.wl-austin .powered-by:hover { text-decoration: underline; color: var(--navy); }
+body.wl-austin .powered-by .ftk-script {
+  font-family: "Great Vibes", cursive;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--navy);
+}
+body.wl-austin a.listing-link { text-decoration: none; color: inherit; display: block; }
+body.wl-austin a.listing-link:hover .listing { border-color: var(--sky); }
+body.wl-austin .listing { transition: border-color 0.15s, box-shadow 0.15s; }
+body.wl-austin .btn-coral { background: var(--coral); color: #fff; }
+body.wl-austin .btn-coral:hover { filter: brightness(1.06); color: #fff; }
+body.wl-austin .deal-story { max-width: 40rem; }
+body.wl-austin .deal-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0 1.25rem;
+}
+@media (max-width: 640px) {
+  body.wl-austin .deal-metrics { grid-template-columns: 1fr; }
+}
+body.wl-austin .deal-metric {
+  background: #fff;
+  border: 1.5px solid rgba(11, 31, 51, 0.12);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+body.wl-austin .deal-metric .label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.3rem;
+}
+body.wl-austin .deal-metric .value {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--navy);
+}
